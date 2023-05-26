@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "jsx": "react",
+        "target": "ES6",
+        "strict": true,
+        "allowJs": true,
+        "sourceMap": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "noUncheckedIndexedAccess": true,
+        "noPropertyAccessFromIndexSignature": true,
+        "exactOptionalPropertyTypes": true,
+        "baseUrl": "./",
+    }
+}

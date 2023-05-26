@@ -1,11 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import App from './components/App/App';
 import reportWebVitals from './reportWebVitals';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+const root = document.getElementById("root")
+
+if (!root) {
+    throw new Error("can't find root element")
+}
+
+if (!window.__REACT_ROOT__) {
+    window.__REACT_ROOT__ = ReactDOM.createRoot(root)
+}
+
+window.__REACT_ROOT__.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
