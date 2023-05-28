@@ -72,9 +72,11 @@ export default (env, argv) => {
             })
         ].filter(Boolean),
         devServer: {
+            host: "0.0.0.0",
             static: outputPath,
             historyApiFallback: true,
-            port: 3000
+            port: 8080,
+            allowedHosts: "all"
         },
     }
 }
