@@ -5,7 +5,7 @@ import styles from "./RegionMap.module.scss"
 import { fromJS } from "immutable"
 import type { City } from "../../core/types"
 
-import MAP_STYLE from "../../assets/map-style/months.json"
+import MAP_STYLE from "./assets/months.json"
 
 import { isMobile } from "react-device-detect"
 
@@ -14,7 +14,7 @@ const defaultStyle = fromJS(MAP_STYLE)
 interface RegionMapProps {
     doneCities: City[],
     attempts: City[],
-    hiddenCity: City
+    hiddenCity: City | undefined
 }
 
 export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, attempts, doneCities }) => {
@@ -25,6 +25,7 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, attempts, done
                 bounds: [[36.282863, 43.013095], [41.813208, 47.489126]],
             }}
             mapStyle={defaultStyle} // https://api.maptiler.com/maps/streets/style.json?key=h82LwnMs7FsmNItmCTPZ
+            attributionControl={false}
         >
             { !isMobile && <NavigationControl position="top-right" /> }
             <Layer
@@ -437,14 +438,16 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, attempts, done
                     key={index}
                 />
             )}
-            <Marker
-                latitude={hiddenCity.ll[0]}
-                longitude={hiddenCity.ll[1]}
-                children={<div className={`${styles.marker} ${styles.red}`}>
-                    <div className={styles.text}>?</div>
-                    <div className={styles.circle}></div>
-                </div>}
-            />
+            { hiddenCity && 
+                <Marker
+                    latitude={hiddenCity.ll[0]}
+                    longitude={hiddenCity.ll[1]}
+                    children={<div className={`${styles.marker} ${styles.red}`}>
+                        <div className={styles.text}>?</div>
+                        <div className={styles.circle}></div>
+                    </div>}
+                />
+            }
         </Map>
     </div>
 }

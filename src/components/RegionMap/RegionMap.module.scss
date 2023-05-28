@@ -1,8 +1,57 @@
 .rootOfMap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+}
+
+.marker {
+  text-shadow: 0 1px 0 white,
+              1px 1px 0 white,
+              1px 0 0 white,
+              0 -1px 0 white,
+              -1px -1px 0 white,
+              -1px 0 0 white,
+              -1px 1px 0 white,
+              1px -1px 0 white;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  .text {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+
+    bottom: 8px;
   }
-  
+
+  .circle {
+    position: relative;
+    width: 5px;
+    height: 5px;
+
+    background: black;
+    border: white solid 2px;
+    border-radius: 5px;
+  }
+
+  &.red {
+    .text {
+      color: #ff3b30;
+    }
+    .circle {
+      background: #ff3b30;
+    }
+  }
+
+  &.green {
+    .text {
+      color: #248a3d;
+    }
+    .circle {
+      background: #248a3d;
+    }
+  }
+}
