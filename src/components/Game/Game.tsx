@@ -19,7 +19,7 @@ export const Game: React.FC = () => {
     // const [doneCities, setDoneCities] = useState<City[]>([])
 
     // const { allCities, hiddenCityId } = useGameContext()
-    const { allCities, hiddenCityId, attemptedCitiesIds } = useGameContext()
+    const { allCities, hiddenCityId, attemptedCitiesIds, sumDistance } = useGameContext()
 
     useEffect(() => {
         console.log({ attemptedCitiesIds })
@@ -37,9 +37,6 @@ export const Game: React.FC = () => {
     )
     
     // const [hoveredHint, setHoveredHint] = useState<number | undefined>(undefined)
-
-    // const inputRef = useRef<HTMLInputElement>(null)
-    // const [isFocused, setIsFocused] = useState(true)
 
     // const makeCity = useCallback(() => {
     //     if (allHiddenCities.length > 1) {
@@ -75,24 +72,8 @@ export const Game: React.FC = () => {
     return (
         <div className={styles.root}>
             <RegionMap hiddenCity={hiddenCity} attempts={attemptedCities} doneCities={[]} />
+            <div className={styles.info}>Distance: {sumDistance} km</div>
             <PlayControl />
         </div>
     )
-}
-
-const compareCityNames = (name1: string, name2: string) => {
-    return name1.toLocaleLowerCase() === name2.toLocaleLowerCase()
-}
-
-function isCharacterKeyPress(evt: React.KeyboardEvent<HTMLInputElement>) {
-    if (typeof evt.which === "undefined") {
-        // This is IE, which only fires keypress events for printable keys
-        return true
-    } else if (typeof evt.which === "number" && evt.which > 0) {
-        // In other browsers except old versions of WebKit, evt.which is
-        // only greater than zero if the keypress is a printable key.
-        // We need to filter out backspace and ctrl/alt/meta key combinations
-        return !evt.ctrlKey && !evt.metaKey && !evt.altKey && evt.which !== 8
-    }
-    return false
 }

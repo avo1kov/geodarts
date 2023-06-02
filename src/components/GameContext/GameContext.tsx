@@ -1,12 +1,11 @@
 import React, { ReactNode, createContext, useContext, useReducer } from "react"
-import { useImmerReducer } from "use-immer"
-import { Draft } from "immer"
 import { City } from "src/core/types"
-import { attemptCity } from "./actions"
+import { attemptCity, takeHint } from "./actions"
 import { citiesData } from "./allCities"
 
 export interface GameContextType {
     allCities: City[],
+    sumDistance: number,
     hiddenCityId: number | undefined,
     restHiddenCitiesIds: number[],
     attemptedCitiesIds: number[],
@@ -18,14 +17,19 @@ export interface GameDispatchAttemptedActionType {
     attemptCityId: number;
 }
 
-export type GameDispatchActionType = GameDispatchAttemptedActionType
+export interface GameDispatchTookHintActionType {
+    type: "took_hint";
+}
+
+export type GameDispatchActionType = GameDispatchAttemptedActionType | GameDispatchTookHintActionType
 
 function gameReducer(game: GameContextType, action: GameDispatchActionType) {
     switch (action.type) {
     case "attempted": {
-        const newGame = attemptCity(game, action)
-        console.log(newGame.attemptedCitiesIds)
-        return newGame
+        return attemptCity(game, action)
+    }
+    case "took_hint": {
+        return takeHint(game)
     }
     }
 }
@@ -34,9 +38,10 @@ const hiddenCities = [...Array(2)].map(() => Math.floor(Math.random() * citiesDa
 
 const initGameState: GameContextType = {
     allCities: citiesData,
+    sumDistance: 0,
     hiddenCityId: hiddenCities[0]!,
     restHiddenCitiesIds: hiddenCities.slice(1), // TODO: must be got from server
-    attemptedCitiesIds: [1, 2, 3],
+    attemptedCitiesIds: [],
     recognizedCitiesIds: []
 }
 

@@ -75,7 +75,6 @@ export default (env, argv) => {
             host: "0.0.0.0",
             static: outputPath,
             historyApiFallback: true,
-            port: 8080,
             allowedHosts: "all"
         },
     }

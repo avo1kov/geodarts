@@ -1,4 +1,3 @@
-import { Draft } from "immer"
 import { GameContextType, GameDispatchAttemptedActionType } from "./GameContext"
 
 export function attemptCity(game: GameContextType, action: GameDispatchAttemptedActionType): GameContextType {
@@ -39,5 +38,12 @@ function finishGame(game: GameContextType): GameContextType {
             : game.recognizedCitiesIds,
         restHiddenCitiesIds: [],
         hiddenCityId: undefined
+    }
+}
+
+export function takeHint(game: GameContextType): GameContextType {
+    return {
+        ...game,
+        sumDistance: game.sumDistance + 30
     }
 }
