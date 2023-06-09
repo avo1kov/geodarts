@@ -6,13 +6,15 @@ import EmojiObjectsOutlinedIcon from "@mui/icons-material/EmojiObjectsOutlined"
 import styles from "./PlayControl.module.scss"
 import { isMobile } from "react-device-detect"
 import { MainInput } from "../MainInput"
+import { RoadButton } from "../RoadButton"
 
 export const PlayControl: React.FC = () => {
-    const { allCities, hiddenCityId } = useGameContext()
+    const { allCities, hiddenCityId, restHiddenCitiesIds } = useGameContext()
 
     const hiddenCity = useMemo(() => hiddenCityId ? allCities[hiddenCityId] : undefined, [allCities, hiddenCityId])
     const dispatch = useGameDispanchContext()
 
+    const [mainInputValue, setMainInputValue] = useState("При")
     const inputRef = useRef<HTMLInputElement>(null)
 
     const [answerHint, setAnswerHint] = useState("")
@@ -31,21 +33,38 @@ export const PlayControl: React.FC = () => {
         const answer = hiddenCity?.name
         
         if (answer) {
-            setAnswerHint(answer.slice(0, answerHint.length + 1))
-            // setInputValue("")
+            const newAnswerHint = answer.slice(0, answerHint.length + 1)
+            setAnswerHint(newAnswerHint)
+            setMainInputValue("")
             
             dispatch({ type: "took_hint" })
 
-            inputRef.current?.blur()
-            inputRef.current?.focus()
+            if (restHiddenCitiesIds.length > 0) {
+                inputRef.current?.blur()
+                inputRef.current?.focus()   
+            }
+
+            if (newAnswerHint === answer && hiddenCityId) {
+                dispatch({ type: "attempted", attemptCityId: hiddenCityId })
+            }
         }
-    }, [answerHint.length, dispatch, hiddenCity?.name])
+    }, [answerHint.length, dispatch, hiddenCity?.name, hiddenCityId, restHiddenCitiesIds.length])
 
     return <div className={`${styles.root} ${isMobile && styles.mobile}`}>
-        <button className={`${styles.button} ${styles.hintButton}`} onClick={() => showNextLetter()}
+        <RoadButton
+            view={"orange"}
+            className={styles.button}
+            onClick={() => showNextLetter()} title="Подсказка"
+            borderRadius={10}
+            borderWidth={1.5}
+            accentColor={"#4f4d41"}
+        >
+            <EmojiObjectsOutlinedIcon className={styles.hintIcon} />
+        </RoadButton>
+        {/* <button className={`${styles.button} ${styles.hintButton}`} onClick={() => showNextLetter()}
         >
             <EmojiObjectsOutlinedIcon />
-        </button>
-        <MainInput inputRef={inputRef} answerHint={answerHint} />
+        </button> */}
+        <MainInput inputRef={inputRef} answerHint={answerHint} value={mainInputValue} onChange={setMainInputValue} />
     </div>
 }

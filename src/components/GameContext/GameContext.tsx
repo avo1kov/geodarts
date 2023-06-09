@@ -9,7 +9,7 @@ export interface GameContextType {
     hiddenCityId: number | undefined,
     restHiddenCitiesIds: number[],
     attemptedCitiesIds: number[],
-    recognizedCitiesIds: number[],
+    recognizedCitiesIds: number[]
 }
 
 export interface GameDispatchAttemptedActionType {
@@ -34,7 +34,7 @@ function gameReducer(game: GameContextType, action: GameDispatchActionType) {
     }
 }
 
-const hiddenCities = [...Array(2)].map(() => Math.floor(Math.random() * citiesData.length))
+const hiddenCities = [...Array(5)].map(() => Math.floor(Math.random() * citiesData.length))
 
 const initGameState: GameContextType = {
     allCities: citiesData,
@@ -42,7 +42,7 @@ const initGameState: GameContextType = {
     hiddenCityId: hiddenCities[0]!,
     restHiddenCitiesIds: hiddenCities.slice(1), // TODO: must be got from server
     attemptedCitiesIds: [],
-    recognizedCitiesIds: []
+    recognizedCitiesIds: [0, 1, 6, 8, 10]
 }
 
 console.log({ initGameState })

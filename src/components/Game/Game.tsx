@@ -8,6 +8,8 @@ import type { City } from "../../core/types"
 import { isMobile } from "react-device-detect"
 import { PlayControl } from "../PlayControl"
 import { useGameContext } from "../GameContext"
+import { CitySign } from "../CitySign"
+import { ArrowRight } from "../../assets/icons/ArrowRight"
 
 // [lat, lng]
 
@@ -19,7 +21,14 @@ export const Game: React.FC = () => {
     // const [doneCities, setDoneCities] = useState<City[]>([])
 
     // const { allCities, hiddenCityId } = useGameContext()
-    const { allCities, hiddenCityId, attemptedCitiesIds, sumDistance } = useGameContext()
+    const {
+        allCities,
+        hiddenCityId,
+        attemptedCitiesIds,
+        sumDistance,
+        recognizedCitiesIds,
+        restHiddenCitiesIds 
+    } = useGameContext()
 
     useEffect(() => {
         console.log({ attemptedCitiesIds })
@@ -69,10 +78,44 @@ export const Game: React.FC = () => {
     //     })
     // }, [isFocused])
 
+    const remainCitiesNumber = useMemo(
+        () => restHiddenCitiesIds.length + (hiddenCity !== undefined ? 1 : 0),
+        [hiddenCity, restHiddenCitiesIds.length]
+    )
+
     return (
         <div className={styles.root}>
-            <RegionMap hiddenCity={hiddenCity} attempts={attemptedCities} doneCities={[]} />
-            <div className={styles.info}>Distance: {sumDistance} km</div>
+            <RegionMap
+                hiddenCity={hiddenCity}
+                attempts={attemptedCities}
+                recognizedCities={recognizedCitiesIds.map((id) => allCities[id]!)}
+            />
+            <div className={styles.info}>
+                {/* <div>
+                    Сумма промахов: {sumDistance} км
+                </div> */}
+                <div className={[styles.recognized, isMobile ? styles.mobile : ""].join(" ")}>
+                    {recognizedCitiesIds.map((cityId) => {
+                        const city = allCities[cityId]!
+                        return (
+                            <a href={city.wikilink} target="_blank" className={styles.link}>
+                                <CitySign
+                                    text={city.name.toUpperCase()}
+                                    crossOnHover={city.wikilink !== undefined}
+                                    shiftOnHover={city.wikilink !== undefined}
+                                    crossed={city.wikilink === undefined}
+                                    view="blue"
+                                    clickable
+                                />
+                            </a>
+                        )
+                    })}
+                    <CitySign text={"Ещё " + remainCitiesNumber} />
+                    {/* {[...Array(restHiddenCitiesIds.length + (hiddenCity !== undefined ? 1 : 0))].map(() => (
+                        <div className={styles.emptyCity}></div>
+                    ))} */}
+                </div>
+            </div>
             <PlayControl />
         </div>
     )

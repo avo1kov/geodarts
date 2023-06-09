@@ -9,7 +9,32 @@
 .info {
     position: absolute;
 
-    top: 0;
-    left: 0;
+    top: 1vh;
+    left: 1vh;
+
+    text-align: left;
 }
-  
+
+.recognized {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+
+    &.mobile {
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100vw;
+    }
+}
+
+.emptyCity {
+    width: 160px;
+    height: 29px;
+    border-radius: 3px;
+    background: #2e2e2f3a;
+}
+ 
+.link {
+    text-decoration: none;
+}

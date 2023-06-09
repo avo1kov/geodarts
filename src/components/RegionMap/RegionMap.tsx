@@ -12,12 +12,12 @@ import { isMobile } from "react-device-detect"
 const defaultStyle = fromJS(MAP_STYLE)
 
 interface RegionMapProps {
-    doneCities: City[],
+    recognizedCities: City[],
     attempts: City[],
     hiddenCity: City | undefined
 }
 
-export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, attempts, doneCities }) => {
+export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, attempts, recognizedCities }) => {
     return <div className={styles.rootOfMap}>
         <Map
             mapLib={maplibregl} 
@@ -414,7 +414,7 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, attempts, done
                     ]
                 }}
             />
-            {doneCities.map((city, index) => 
+            {recognizedCities.map((city, index) => 
                 <Marker
                     latitude={city.ll[0]}
                     longitude={city.ll[1]}

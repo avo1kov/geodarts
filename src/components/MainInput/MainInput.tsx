@@ -11,19 +11,19 @@ const MAX_HINTS_NUMBER = 3
 interface MainInputProps {
     inputRef: React.RefObject<HTMLInputElement>;
     answerHint: string;
+    value: string;
+    onChange?: (value: string) => void;
 }
 
-export function MainInput({ inputRef, answerHint }: MainInputProps) {
+export function MainInput({ inputRef, answerHint, value, onChange }: MainInputProps) {
     const { allCities, hiddenCityId } = useGameContext()
 
     const hiddenCity = useMemo(() => hiddenCityId ? allCities[hiddenCityId] : undefined, [allCities, hiddenCityId])
     const dispatch = useGameDispanchContext()
-    
-    const [inputValue, setInputValue] = useState("")
 
     const citiesNames = useMemo(() => allCities.map((city) => city.name), [allCities])
     
-    const attemptText: string = useMemo(() => answerHint + inputValue, [answerHint, inputValue])
+    const attemptText: string = useMemo(() => answerHint + value, [answerHint, value])
 
     const [isFocused, setIsFocused] = useState(true)
 
@@ -32,18 +32,18 @@ export function MainInput({ inputRef, answerHint }: MainInputProps) {
         const hints = citiesNames.filter((cityName) => cityName.toLowerCase().includes(loweredSearch))
         const sortedHints = hints.sort((a, b) => a.toLowerCase().indexOf(loweredSearch) - b.toLowerCase().indexOf(loweredSearch))
 
-        if (inputValue.length === 0 && answerHint.length > 0) {
+        if (value.length === 0 && answerHint.length > 0) {
             return ["", []]
         }
 
-        if (inputValue.length === 0 || sortedHints[0] && sortedHints[0].indexOf(loweredSearch) > 0) {
+        if (value.length === 0 || sortedHints[0] && sortedHints[0].indexOf(loweredSearch) > 0) {
             return ["", sortedHints.slice(0, MAX_HINTS_NUMBER)]
         }
         
         return [sortedHints[0], sortedHints.slice(1, MAX_HINTS_NUMBER + 1)]
-    }, [answerHint.length, attemptText, citiesNames, inputValue.length])
+    }, [answerHint.length, attemptText, citiesNames, value.length])
 
-    const checkGuess = useCallback(() => {
+    const attempt = useCallback(() => {
         if (!inputHint) {
             return
         }
@@ -51,27 +51,31 @@ export function MainInput({ inputRef, answerHint }: MainInputProps) {
         const attemptCityId = allCities.findIndex((city) => city.name.toLowerCase() === inputHint.toLowerCase())
 
         if (attemptCityId > -1) {
-            setInputValue("")
+            onChange?.("")
             dispatch({
                 type: "attempted",
                 attemptCityId
             })
         }
-    }, [allCities, dispatch, inputHint])
+    }, [allCities, dispatch, inputHint, onChange])
 
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setInputValue(e.target.value)
+        onChange?.(e.target.value)
         // setHoveredHint(undefined)
-    }, [])
+    }, [onChange])
 
     const handleInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
         e.stopPropagation()
         
         switch (e.keyCode) {
         case KeyCodes.enter: {
+            if (inputHint && inputHint !== value) {
+                onChange?.(inputHint)
+            } else {
             // setHoveredHint(undefined)
             // checkGuess(hoveredHint !== undefined && selectHints[hoveredHint] || inputHint || attemptText)
-            checkGuess()
+                attempt()
+            }
             return
         }
         // case KeyCodes.tab:
@@ -96,7 +100,7 @@ export function MainInput({ inputRef, answerHint }: MainInputProps) {
             // setHoveredHint((state) => state && state > 0 ? state - 1 : undefined)
         }
         }
-    }, [checkGuess])
+    }, [attempt, inputHint, onChange, value])
 
     return (
         <div className={styles.form}>
@@ -105,11 +109,13 @@ export function MainInput({ inputRef, answerHint }: MainInputProps) {
                     {inputHint ? getHighlightedText(inputHint, attemptText) : null}
                 </div>
                 <div className={styles.inputWithHint}>
-                    <span className={`${styles.answerHint} ${answerHint && styles.active}`}>{answerHint}</span>
+                    <span className={`${styles.answerHint} ${answerHint && styles.active}`}>
+                        {answerHint}
+                    </span>
                     <input
                         type="text"
                         ref={inputRef}
-                        value={inputValue}
+                        value={value}
                         onChange={handleInputChange}
                         onKeyDown={handleInputKeyDown}
                         onFocus={() => setIsFocused(true)}
@@ -127,7 +133,7 @@ export function MainInput({ inputRef, answerHint }: MainInputProps) {
                         !inputHint && styles.disabled
                     ].join(" ")
                 }
-                onClick={() => inputHint && checkGuess()}>
+                onClick={() => inputHint && attempt()}>
                 <SendRoundedIcon />
             </button>
             {/* <div className={`${styles.selectHint} ${!isFocused ? styles.hidden : null}`} onMouseLeave={() => setHoveredHint(undefined)}>

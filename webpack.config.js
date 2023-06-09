@@ -60,6 +60,14 @@ export default (env, argv) => {
                     test: /\.(ts|tsx)$/,
                     loader: "ts-loader",
                 },
+                {
+                    test: /\.(png|jpe?g|gif|svg)$/i,
+                    use: [
+                        {
+                            loader: "file-loader",
+                        },
+                    ],
+                }
             ],
         },
         plugins: [

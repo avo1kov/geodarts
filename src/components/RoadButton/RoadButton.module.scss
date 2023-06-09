@@ -1,0 +1,127 @@
+.root {
+    position: relative;
+    left: 0;
+
+    border: white solid 1px;
+    border-radius: 4px;
+    background: white;
+
+    height: 29px;
+    box-shadow: 0px 0.5vh 10px -4px rgba(0,0,0,0.4);
+    box-sizing: border-box;
+
+    cursor: inherit;
+
+    transition: 0.1s all ease-in-out;
+
+    &.clickable {
+        cursor: pointer;
+        user-select: none;
+
+        &:hover {
+            filter: brightness(1.05) contrast(1.05);
+        }
+        &:active {
+            transform: scale(0.95);
+        }
+    }
+
+    &.blue {
+        border-color: #0D69E1;
+        background-color: #0D69E1;
+
+        .content {
+            color: #fff !important;
+        }
+
+        .inner {
+            border-color: #fff;
+        }
+    }
+
+    &.orange {
+        border-color: #FFCC00;
+        background-color: #FFCC00;
+    }
+
+    &.green {
+        border-color: #00A500;
+        background-color: #00A500;
+
+        .content {
+            color: #fff !important;
+        }
+
+        .inner {
+            border-color: #fff;
+        }
+    }
+
+    &:hover {
+        transition: 0.1s all ease-out;
+
+        &.shiftOnHover {
+            left: 5px;
+        }
+
+        .inner .redLine.crossOnHover {
+            transform: rotate(-35deg) translateX(-70px);
+        }
+    }
+
+    .inner {
+        box-sizing: border-box;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        height: 100%;
+        width: 100%;
+        padding: 0 10px;
+        
+        border: rgb(64, 64, 68) solid 1px;
+        border-radius: 3px;
+
+        overflow: hidden;
+
+        .content {
+            display: flex;
+            align-items: center;
+
+            font-size: 22px;
+            line-height: 22px;
+
+            color: #0d0d15;
+        }
+
+        .redLine {
+            position: absolute;
+            height: 5px;
+            width: 60px;
+            background: #FF0000;
+            transition: 0.2s all ease-out;
+            transform: rotate(-35deg) translateX(-70px);
+
+            &.visible {
+                transform: rotate(-35deg);
+                transition: 0.2s all linear;
+            }
+
+            &.crossOnHover {
+                transform: rotate(-35deg);
+                transition: 0.2s all linear;
+            }
+        }
+    }
+}
+
+.rightIcon {
+    height: 20px;
+    margin-left: 6px;
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+}
