@@ -15,7 +15,8 @@
               -1px 0 0 white,
               -1px 1px 0 white,
               1px -1px 0 white;
-  font-size: 14px;
+  font-size: 12px;
+  line-height: 14px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -24,7 +25,7 @@
   .text {
     position: absolute;
 
-    bottom: 8px;
+    bottom: 9px;
   }
 
   .circle {
@@ -52,6 +53,15 @@
     }
     .circle {
       background: #248a3d;
+    }
+  }
+
+  &.blue {
+    .text {
+      color: #1254ab;
+    }
+    .circle {
+      background: #0D69E1;
     }
   }
 }

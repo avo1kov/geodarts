@@ -38,3 +38,15 @@
 .link {
     text-decoration: none;
 }
+
+.restCitiesNumber {    
+    svg {
+        height: 20px;
+        width: 20px;
+        // margin-left: 8px;
+    }
+
+    > div > div {
+        gap: 5px;
+    }
+}

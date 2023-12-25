@@ -9,7 +9,8 @@ import { isMobile } from "react-device-detect"
 import { PlayControl } from "../PlayControl"
 import { useGameContext } from "../GameContext"
 import { CitySign } from "../CitySign"
-import { ArrowRight } from "../../assets/icons/ArrowRight"
+import { ArrowDown, ArrowRight } from "../../assets/icons/Arrows"
+import { RoadButton } from "../RoadButton"
 
 // [lat, lng]
 
@@ -101,16 +102,20 @@ export const Game: React.FC = () => {
                             <a href={city.wikilink} target="_blank" className={styles.link}>
                                 <CitySign
                                     text={city.name.toUpperCase()}
-                                    crossOnHover={city.wikilink !== undefined}
-                                    shiftOnHover={city.wikilink !== undefined}
-                                    crossed={city.wikilink === undefined}
+                                    crossOnHover={city.wikilink !== undefined && !isMobile}
+                                    shiftOnHover={city.wikilink !== undefined && !isMobile}
+                                    crossed={city.wikilink === undefined || isMobile}
                                     view="blue"
                                     clickable
                                 />
                             </a>
                         )
                     })}
-                    <CitySign text={"Ещё " + remainCitiesNumber} />
+                    <RoadButton className={styles.restCitiesNumber}>
+                        {isMobile ? undefined : <ArrowDown />}
+                        {"Осталось " + remainCitiesNumber}
+                        {isMobile ? <ArrowRight /> : <ArrowDown /> }
+                    </RoadButton>
                     {/* {[...Array(restHiddenCitiesIds.length + (hiddenCity !== undefined ? 1 : 0))].map(() => (
                         <div className={styles.emptyCity}></div>
                     ))} */}

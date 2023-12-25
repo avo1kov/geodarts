@@ -419,7 +419,7 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, attempts, reco
                     latitude={city.ll[0]}
                     longitude={city.ll[1]}
                     color="#32ade6"
-                    children={<div className={`${styles.marker} ${styles.green}`}>
+                    children={<div className={`${styles.marker} ${styles.blue}`}>
                         <div className={styles.text}>{city.name}</div>
                         <div className={styles.circle}></div>
                     </div>}

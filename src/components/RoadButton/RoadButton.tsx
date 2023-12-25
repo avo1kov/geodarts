@@ -1,13 +1,14 @@
 import React, { ReactNode, useMemo } from "react"
 import styles from "./RoadButton.module.scss"
 
-interface ReadButtonProps {
+export interface ReadButtonProps {
     text?: string;
     crossed?: boolean;
     crossOnHover?: boolean;
     shiftOnHover?: boolean;
     view?: "blue" | "white" | "orange" | "green";
     onClick?: () => void;
+    clickable?: boolean;
     title?: string;
     children?: ReactNode;
     className?: string;
@@ -24,6 +25,7 @@ export function RoadButton({
     shiftOnHover,
     view = "white",
     onClick,
+    clickable,
     title,
     className,
     borderRadius,
@@ -54,7 +56,7 @@ export function RoadButton({
                     styles.root,
                     viewStyle,
                     shiftOnHover ? styles.shiftOnHover : "",
-                    onClick !== undefined ? styles.clickable : "",
+                    (clickable || onClick !== undefined) && clickable !== false ? styles.clickable : "",
                     className
                 ].join(" ")
             }
