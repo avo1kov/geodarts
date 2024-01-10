@@ -1,20 +1,36 @@
 import React, { ReactNode, createContext, useContext, useReducer } from "react"
 import { City } from "src/core/types"
-import { attemptCity, takeHint } from "./actions"
+import { attempt, takeHint } from "./actions"
 import { citiesData } from "./allCities"
+import { LngLat } from "mapbox-gl"
+
+export interface Attempt {
+    ll: LngLat,
+    distance: number,
+    name: string,
+    direction: number
+}
 
 export interface GameContextType {
     allCities: City[],
     sumDistance: number,
-    hiddenCityId: number | undefined,
-    restHiddenCitiesIds: number[],
-    attemptedCitiesIds: number[],
-    recognizedCitiesIds: number[]
+    hiddenCity: City | undefined,
+    restHiddenCities: City[],
+    attempted: Attempt[],
+    recognizedCities: City[]
 }
+
+// export interface GameDispatchAttemptedActionType {
+//     type: "attempted";
+//     attemptCityId: number;
+// }
 
 export interface GameDispatchAttemptedActionType {
     type: "attempted";
-    attemptCityId: number;
+    distance: number;
+    ll: LngLat;
+    name: string;
+    direction: number;
 }
 
 export interface GameDispatchTookHintActionType {
@@ -26,7 +42,7 @@ export type GameDispatchActionType = GameDispatchAttemptedActionType | GameDispa
 function gameReducer(game: GameContextType, action: GameDispatchActionType) {
     switch (action.type) {
     case "attempted": {
-        return attemptCity(game, action)
+        return attempt(game, action)
     }
     case "took_hint": {
         return takeHint(game)
@@ -34,19 +50,22 @@ function gameReducer(game: GameContextType, action: GameDispatchActionType) {
     }
 }
 
-const hiddenCities = [...Array(5)].map(() => Math.floor(Math.random() * citiesData.length))
+const hiddenCities = [
+    ...[...Array(1)].map(() => Math.floor(Math.random() * citiesData.length))
+]
+    .map(i => citiesData[i]!)
 
 const initGameState: GameContextType = {
     allCities: citiesData,
     sumDistance: 0,
-    hiddenCityId: hiddenCities[0]!,
-    restHiddenCitiesIds: hiddenCities.slice(1), // TODO: must be got from server
-    attemptedCitiesIds: [],
-    recognizedCitiesIds: [0, 1, 6, 8, 10]
+    hiddenCity: hiddenCities[0]!, // undefined, // hiddenCities[0]!,
+    restHiddenCities: hiddenCities.slice(1), // TODO: must be got from server
+    attempted: [],
+    recognizedCities: [], //[citiesData[Math.floor(Math.random() * citiesData.length)]!], // [citiesData[Math.floor(Math.random() * citiesData.length)]!] // [0, 1, 6, 8, 10].map((i) => citiesData[i]!)
 }
 
 console.log({ initGameState })
-console.log(citiesData[initGameState.hiddenCityId!])
+// console.log(citiesData[initGameState.hiddenCityId!])
 
 export const GameContext = createContext<any>(initGameState)
 export const GameDispatchContext = createContext<any>(null)

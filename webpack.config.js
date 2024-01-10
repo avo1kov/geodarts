@@ -11,7 +11,7 @@ export default (env, argv) => {
         entry: "./src/index.tsx",
         output: {
             filename: "main.js",
-            publicPath: "/",
+            publicPath: "/geodarts/",
             path: outputPath,
             clean: true
         },
@@ -38,20 +38,20 @@ export default (env, argv) => {
                         PRODUCTION ? MiniCssExtractPlugin.loader : "style-loader",
                         {
                             loader: "css-loader",
-                            options: {
-                                modules: {
-                                    localIdentName: "[path][name]__[local]--[hash:base64:5]",
-                                    getLocalIdent: (context, localIdentName, localName, options) => {
-                                        if (/^map/.test(localName)) {
-                                            return localName
-                                        }
+                            // options: {
+                            //     modules: {
+                            //         localIdentName: "[path][name]__[local]--[hash:base64:5]",
+                            //         getLocalIdent: (context, localIdentName, localName, options) => {
+                            //             if (/^map/.test(localName)) {
+                            //                 return localName
+                            //             }
 
-                                        const hash = Math.random().toString(36).slice(9)
+                            //             const hash = Math.random().toString(36).slice(9)
 
-                                        return `${localName}_${hash}`
-                                    }
-                                }
-                            }
+                            //             return `${localName}_${hash}`
+                            //         }
+                            //     }
+                            // }
                         },
                         "sass-loader"
                     ]
@@ -67,7 +67,11 @@ export default (env, argv) => {
                             loader: "file-loader",
                         },
                     ],
-                }
+                },
+                {
+                    test: /\.(woff|woff2|eot|ttf|otf)$/i,
+                    type: "asset/resource",
+                },
             ],
         },
         plugins: [

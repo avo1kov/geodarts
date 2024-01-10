@@ -1,28 +1,51 @@
 import { GameContextType, GameDispatchAttemptedActionType } from "./GameContext"
 
-export function attemptCity(game: GameContextType, action: GameDispatchAttemptedActionType): GameContextType {
-    console.log(action.attemptCityId === game.hiddenCityId, action.attemptCityId, game.hiddenCityId)
+const DEFAULT_RADIUS = 5
 
-    if (action.attemptCityId === game.hiddenCityId) {
+// export function attemptCity(game: GameContextType, action: GameDispatchAttemptedActionType): GameContextType {
+//     console.log(action.attemptCityId === game.hiddenCityId, action.attemptCityId, game.hiddenCityId)
+
+//     if (action.attemptCityId === game.hiddenCityId) {
+//         return setNextCity(game)
+//     } else {
+//         return {
+//             ...game, 
+//             attemptedCitiesIds: [...game.attemptedCitiesIds, action.attemptCityId]
+//         }
+//     }
+// }
+
+export function attempt(game: GameContextType, action: GameDispatchAttemptedActionType): GameContextType {
+    // console.log(action.attemptCityId === game.hiddenCityId, action.attemptCityId, game.hiddenCityId)
+
+    if (action.distance <= (game.hiddenCity?.radius ?? DEFAULT_RADIUS)) {
         return setNextCity(game)
     } else {
         return {
-            ...game, 
-            attemptedCitiesIds: [...game.attemptedCitiesIds, action.attemptCityId]
+            ...game,
+            sumDistance: game.sumDistance + action.distance,
+            attempted: [
+                ...game.attempted,
+                {
+                    ll: action.ll,
+                    distance: action.distance,
+                    name: action.name,
+                    direction: action.direction
+                }
+            ]
         }
     }
 }
 
 function setNextCity(game: GameContextType): GameContextType {
-    if (game.restHiddenCitiesIds.length) {
+    if (game.restHiddenCities.length) {
         return {
             ...game,
-            attemptedCitiesIds: [],
-            recognizedCitiesIds: game.hiddenCityId
-                ? [...game.recognizedCitiesIds, game.hiddenCityId]
-                : game.recognizedCitiesIds,
-            restHiddenCitiesIds: game.restHiddenCitiesIds.slice(1),
-            hiddenCityId: game.restHiddenCitiesIds[0]
+            recognizedCities: game.hiddenCity
+                ? [...game.recognizedCities, game.hiddenCity]
+                : game.recognizedCities,
+            restHiddenCities: game.restHiddenCities.slice(1),
+            hiddenCity: game.restHiddenCities[0]
         }
     } else {
         return finishGame(game)
@@ -32,12 +55,12 @@ function setNextCity(game: GameContextType): GameContextType {
 function finishGame(game: GameContextType): GameContextType {
     return {
         ...game,
-        attemptedCitiesIds: [],
-        recognizedCitiesIds: game.hiddenCityId
-            ? [...game.recognizedCitiesIds, game.hiddenCityId]
-            : game.recognizedCitiesIds,
-        restHiddenCitiesIds: [],
-        hiddenCityId: undefined
+        // attempted: [],
+        recognizedCities: game.hiddenCity
+            ? [...game.recognizedCities, game.hiddenCity]
+            : game.recognizedCities,
+        restHiddenCities: [],
+        hiddenCity: undefined
     }
 }
 

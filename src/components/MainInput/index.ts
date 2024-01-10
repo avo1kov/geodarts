@@ -1,1 +1,0 @@
-export { MainInput } from "./MainInput"

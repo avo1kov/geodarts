@@ -15,6 +15,7 @@ export interface ReadButtonProps {
     borderRadius?: number;
     borderWidth?: number;
     accentColor?: string;
+    fontSize?: number;
 }
 
 export function RoadButton({
@@ -26,11 +27,12 @@ export function RoadButton({
     view = "white",
     onClick,
     clickable,
-    title,
+    title = text,
     className,
     borderRadius,
     borderWidth,
-    accentColor
+    accentColor,
+    fontSize = 22
 }: ReadButtonProps) {
     const viewStyle = useMemo(() => {
         switch (view) {
@@ -60,24 +62,47 @@ export function RoadButton({
                     className
                 ].join(" ")
             }
-            style={{ "borderRadius": borderRadius, "borderWidth": borderWidth }}
+            style={{
+                borderRadius: borderRadius,
+                borderWidth: borderWidth
+            }}
             onClick={onClick}
             title={title}
         >
             <div
                 className={styles.inner}
-                style={{ "borderRadius": (borderRadius! - 1), "borderWidth": borderWidth, "borderColor": accentColor }}
+                style={{
+                    borderRadius: (borderRadius! - 1),
+                    borderWidth: borderWidth,
+                    borderColor: accentColor,
+                    padding: `0 ${fontSize / 2}px`
+                }}
             >
-                <div className={styles.content} style={{ "color": accentColor }}>
+                <div
+                    className={styles.content}
+                    style={{
+                        color: accentColor, 
+                        fontSize: `${fontSize}px`,
+                        lineHeight: `${fontSize}px`,
+                        paddingBottom: "1px",
+                        wordSpacing: `${-fontSize / 4}px`
+                        // padding: `${fontSize / 1000}px 0`
+                    }}
+                >
                     {children ?? text}
                 </div>
-                <div className={
-                    [
-                        styles.redLine,
-                        crossed ? styles.visible : "",
-                        crossOnHover ? styles.crossOnHover : ""
-                    ].join(" ")
-                }></div>
+                <div
+                    className={
+                        [
+                            styles.redLine,
+                            crossed ? styles.visible : "",
+                            crossOnHover ? styles.crossOnHover : ""
+                        ].join(" ")
+                    }
+                    style={{
+                        height: fontSize / 4.5 + "px"
+                    }}
+                ></div>
             </div>
         </div>
     )
