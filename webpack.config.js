@@ -10,7 +10,7 @@ export default (env, argv) => {
     return {
         entry: "./src/index.tsx",
         output: {
-            filename: "main.js",
+            filename: "main-2.js",
             publicPath: "/geodarts/",
             path: outputPath,
             clean: true

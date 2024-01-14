@@ -4,11 +4,14 @@ import { attempt, takeHint } from "./actions"
 import { citiesData } from "./allCities"
 import { LngLat } from "mapbox-gl"
 
+export type Round = "cities" | "peaks" | "seas"
+
 export interface Attempt {
     ll: LngLat,
-    distance: number,
+    distanceKm: number,
     name: string,
-    direction: number
+    direction: number,
+    cityId?: string | undefined;
 }
 
 export interface GameContextType {
@@ -17,7 +20,9 @@ export interface GameContextType {
     hiddenCity: City | undefined,
     restHiddenCities: City[],
     attempted: Attempt[],
-    recognizedCities: City[]
+    recognizedCities: City[],
+    round: Round,
+    hints: Round[],
 }
 
 // export interface GameDispatchAttemptedActionType {
@@ -27,7 +32,8 @@ export interface GameContextType {
 
 export interface GameDispatchAttemptedActionType {
     type: "attempted";
-    distance: number;
+    cityId?: string;
+    distanceKm: number;
     ll: LngLat;
     name: string;
     direction: number;
@@ -59,9 +65,11 @@ const initGameState: GameContextType = {
     allCities: citiesData,
     sumDistance: 0,
     hiddenCity: hiddenCities[0]!, // undefined, // hiddenCities[0]!,
-    restHiddenCities: hiddenCities.slice(1), // TODO: must be got from server
+    restHiddenCities: hiddenCities.slice(1), // TODO: must be gotten from server
     attempted: [],
     recognizedCities: [], //[citiesData[Math.floor(Math.random() * citiesData.length)]!], // [citiesData[Math.floor(Math.random() * citiesData.length)]!] // [0, 1, 6, 8, 10].map((i) => citiesData[i]!)
+    hints: [],
+    round: "cities"
 }
 
 console.log({ initGameState })

@@ -30,7 +30,8 @@ export const Game: React.FC = () => {
         attempted,
         sumDistance,
         recognizedCities,
-        restHiddenCities 
+        restHiddenCities,
+        hints
     } = useGameContext()
 
     const [showFinal, setShowFinal] = useState(true)
@@ -75,6 +76,35 @@ export const Game: React.FC = () => {
         [hiddenCity, restHiddenCities.length]
     )
 
+    const onSupposeByMarker = useCallback((cityId: string) => {
+        if (!hiddenCity) {
+            return
+        }
+
+        const city = allCities.find(city => city.id === cityId)
+
+        if (!city) { return }
+
+        const attemptedPoint = new LngLat(city.ll[1], city.ll[0])
+
+        const hiddenPoint = new LngLat(hiddenCity.ll[1], hiddenCity.ll[0])
+        const distanceKm = attemptedPoint.distanceTo(hiddenPoint) / 1000
+
+        const degree = bearing(attemptedPoint.lat, attemptedPoint.lng, hiddenPoint.lat, hiddenPoint.lng)
+
+        console.log(attemptedPoint, hiddenPoint, degree)
+
+        dispatch({
+            type: "attempted",
+            distanceKm,
+            ll: attemptedPoint,
+            name: hiddenCity.name,
+            direction: degree,
+            cityId
+        })
+
+    }, [allCities, dispatch, hiddenCity])
+
     const onSuppose = useCallback((attemptedPoint: LngLat) => {
         if (!hiddenCity) {
             return
@@ -89,7 +119,7 @@ export const Game: React.FC = () => {
 
         dispatch({
             type: "attempted",
-            distance: distanceKm,
+            distanceKm,
             ll: attemptedPoint,
             name: hiddenCity.name,
             direction: degree
@@ -100,10 +130,13 @@ export const Game: React.FC = () => {
     return (
         <div className={styles.root}>
             <RegionMap
+                allCities={allCities}
                 hiddenCity={hiddenCity}
                 attempted={attempted}
                 recognizedCities={recognizedCities}
+                onSupposeByMarker={onSupposeByMarker}
                 onSuppose={onSuppose}
+                hints={hints}
             />
             {/* <div className={styles.info}>
                 <div className={[styles.recognized, isMobile ? styles.mobile : ""].join(" ")}>
@@ -134,6 +167,9 @@ export const Game: React.FC = () => {
                     }
                 </div>
             </div> */}
+            <div className={styles.hintWrapper}>
+                <button onClick={() => dispatch({ type: "took_hint" })}>Take hint</button>
+            </div>
             <div className={[styles.finishWrap, recognizedCities[0] === undefined || !showFinal ? styles.hidden : ""].join(" ")}>
                 <div
                     className={[
@@ -146,7 +182,7 @@ export const Game: React.FC = () => {
                         <div>🎉 Yeah! You have completed ✅</div>
                         <div>the game #205</div>
                     </div>
-                    <div className={styles.mistakes}>
+                    <div className={styles.results}>
                             You made mistakes for <RoadButton text={`${Math.ceil(sumDistance)} km`} fontSize={isMobile ? 16 : 22} />
                     </div>
                     <RoadButton
@@ -155,6 +191,17 @@ export const Game: React.FC = () => {
                         fontSize={28}
                         crossed
                     />
+                    {
+                        hints.length > 0
+                            ? (
+                                <div className={styles.hints}>
+                                    Used <b>{hints.length} hints</b>
+                                </div>
+                            ) : null
+                    }
+                    <div className={styles.dev}>
+                        This is <b>development version</b> of game. If you want to get notification after release, please, text me to <a href="mailto: to@agvolkov.ru">to@agvolkov.ru</a>
+                    </div>
                     <details className={styles.recommendations}>
                         <summary className={styles.summary}>Similar games from other developers</summary>
                         <div className={styles.listOfGames}>

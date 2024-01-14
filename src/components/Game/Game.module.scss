@@ -138,7 +138,7 @@
             line-height: 22px;
         }
 
-        .mistakes {
+        .results {
             font-size: 16px;
             gap: 8px;
         }
@@ -182,13 +182,18 @@
         line-height: 42px;
     }
 
-    .mistakes {
+    .results {
         font-size: 28px;
         margin-top: 10px;
         margin-bottom: 15px;
         display: flex;
         gap: 15px;
         align-items: baseline;
+    }
+
+    .hints {
+        font-size: 20px;
+        margin-top: 2vh;
     }
 
     .recommendations {
@@ -245,4 +250,15 @@
 
 .hidden {
     display: none;
+}
+
+.dev {
+    padding-top: 3vh;
+    max-width: 500px;
+}
+
+.hintWrapper {
+    z-index: 100;
+    position: absolute;
+    top: 0;
 }

@@ -61,6 +61,11 @@ canvas {
     width: 100%;
 
     font-size: 16px;
+    cursor: pointer !important;
+
+    &.option {
+      cursor: pointer !important;
+    }
 
     svg {
       position: absolute;

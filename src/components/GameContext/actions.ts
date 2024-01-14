@@ -1,6 +1,7 @@
+import { City } from "src/core/types"
 import { GameContextType, GameDispatchAttemptedActionType } from "./GameContext"
 
-const DEFAULT_RADIUS = 5
+const DEFAULT_RADIUS = 10
 
 // export function attemptCity(game: GameContextType, action: GameDispatchAttemptedActionType): GameContextType {
 //     console.log(action.attemptCityId === game.hiddenCityId, action.attemptCityId, game.hiddenCityId)
@@ -18,19 +19,20 @@ const DEFAULT_RADIUS = 5
 export function attempt(game: GameContextType, action: GameDispatchAttemptedActionType): GameContextType {
     // console.log(action.attemptCityId === game.hiddenCityId, action.attemptCityId, game.hiddenCityId)
 
-    if (action.distance <= (game.hiddenCity?.radius ?? DEFAULT_RADIUS)) {
+    if (action.distanceKm <= (game.hiddenCity?.radius ?? DEFAULT_RADIUS)) {
         return setNextCity(game)
     } else {
         return {
             ...game,
-            sumDistance: game.sumDistance + action.distance,
+            sumDistance: game.sumDistance + action.distanceKm,
             attempted: [
                 ...game.attempted,
                 {
                     ll: action.ll,
-                    distance: action.distance,
+                    distanceKm: action.distanceKm,
                     name: action.name,
-                    direction: action.direction
+                    direction: action.direction,
+                    cityId: action.cityId
                 }
             ]
         }
@@ -65,8 +67,9 @@ function finishGame(game: GameContextType): GameContextType {
 }
 
 export function takeHint(game: GameContextType): GameContextType {
+    console.log("=")
     return {
         ...game,
-        sumDistance: game.sumDistance + 30
+        hints: [...game.hints, game.round]
     }
 }

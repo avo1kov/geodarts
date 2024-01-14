@@ -1,5 +1,6 @@
 import React from "react"
-import Map, { Layer, NavigationControl, Marker, LngLat } from "react-map-gl"
+import Map, { Layer, NavigationControl, Marker } from "react-map-gl"
+import { LngLat } from "mapbox-gl"
 import maplibregl from "maplibre-gl"
 import styles from "./RegionMap.module.scss"
 import { fromJS } from "immutable"
@@ -8,19 +9,22 @@ import type { City } from "../../core/types"
 import MAP_STYLE from "./assets/months.json"
 
 import { isMobile } from "react-device-detect"
-import { Attempt } from "../GameContext"
+import { Attempt, Round } from "../GameContext"
 import { RoadButton } from "../RoadButton"
 
 const defaultStyle = fromJS(MAP_STYLE)
 
 interface RegionMapProps {
+    allCities: City[],
     recognizedCities: City[],
     attempted: Attempt[],
     hiddenCity: City | undefined,
-    onSuppose: (point: LngLat) => void
+    hints: Round[],
+    onSuppose: (point: LngLat) => void,
+    onSupposeByMarker: (cityId: string) => void
 }
 
-export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCities, attempted, onSuppose }) => {
+export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCities, attempted, allCities, hints, onSupposeByMarker, onSuppose }) => {
     return <div className={styles.rootOfMap}>
         <Map
             mapLib={maplibregl} 
@@ -436,35 +440,77 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCiti
                     key={index}
                 />
             )}
-            {attempted.map((attempt, index) => 
-                attempt.name === hiddenCity?.name || hiddenCity === undefined
-                    ?
-                    <Marker
-                        latitude={attempt.ll.lat}
-                        longitude={attempt.ll.lng}
-                        color="#32ade6"
-                        children={(
-                            <div className={styles.marker}>
-                                {/* <div className={styles.arrow} style={{
+            {
+                attempted.map((attempt, index) => 
+                    attempt.name === hiddenCity?.name || hiddenCity === undefined
+                        ?
+                        <Marker
+                            latitude={attempt.ll.lat}
+                            longitude={attempt.ll.lng}
+                            color="#32ade6"
+                            children={(
+                                <div className={styles.marker}>
+                                    {/* <div className={styles.arrow} style={{
                                     transform: `translateY(-10px) rotate(${attempt.direction + 180}deg) translateY(10px)`
                                 }}> */}
-                                <div className={styles.arrow} style={{
-                                    transform: `rotate(${attempt.direction + 180}deg)`
-                                }}>
+                                    <div className={styles.arrow} style={{
+                                        transform: `rotate(${attempt.direction + 180}deg)`
+                                    }}>
                                     ⬇️
-                                </div>
+                                    </div>
 
-                                <div className={styles.text}>
-                                    {Math.ceil(attempt.distance)} km
+                                    <div className={styles.text}>
+                                        {Math.ceil(attempt.distanceKm)} km
+                                    </div>
+                                    {/* <div className={styles.circle}></div> */}
                                 </div>
-                                {/* <div className={styles.circle}></div> */}
-                            </div>
                             // </div>
-                        )}
-                        key={index}
-                    />
+                            )}
+                            key={index}
+                        />
+                        : null
+                )
+            }
+            {
+                hints.includes("cities")
+                    ? allCities.map((city, index) => {
+                        const attempt = attempted.find((a) => a.cityId === city.id)
+                        return attempt
+                            ? null
+                            : <Marker
+                                latitude={city.ll[0]}
+                                longitude={city.ll[1]}
+                                color="#32ade6"
+                                children={(
+                                    <div className={`${styles.marker}`}>
+                                        {/* <div className={styles.arrow} style={{
+                                    transform: `translateY(-10px) rotate(${attempt.direction + 180}deg) translateY(10px)`
+                                }}> */}
+                                        <div
+                                            className={`${styles.arrow} ${styles.option}`}
+                                            style={{
+                                            // transform: `rotate(${city.direction + 180}deg)`
+                                            }}      
+                                            onClick={(e) => {
+                                                onSupposeByMarker(city.id)
+                                                e.stopPropagation()
+                                            }}
+                                        >
+                                        🔘
+                                        </div>
+
+                                        {/* <div className={styles.text}>
+                                        {Math.ceil(city.distance)} km
+                                    </div> */}
+                                        {/* <div className={styles.circle}></div> */}
+                                    </div>
+                                    // </div>
+                                )}
+                                key={index}
+                            />
+                    })
                     : null
-            )}
+            }
             {/* { hiddenCity && 
                 <Marker
                     latitude={hiddenCity.ll[0]}
