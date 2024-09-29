@@ -29,7 +29,7 @@ export function RoadButton({
     clickable,
     title = text,
     className,
-    borderRadius,
+    borderRadius = 0,
     borderWidth,
     accentColor,
     fontSize = 22

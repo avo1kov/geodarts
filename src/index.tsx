@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Suspense } from "react"
 import ReactDOM from "react-dom/client"
 import "./index.css"
 import { App } from "./components/App/App"
@@ -17,7 +17,9 @@ if (!window.__REACT_ROOT__) {
 
 window.__REACT_ROOT__.render(
     <React.StrictMode>
-        <App />
+        <Suspense fallback={<div>Loading...</div>}>
+            <App />
+        </Suspense>
     </React.StrictMode>
 )
 

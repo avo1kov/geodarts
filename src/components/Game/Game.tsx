@@ -168,7 +168,7 @@ export const Game: React.FC = () => {
                 </div>
             </div> */}
             <div className={styles.hintWrapper}>
-                <button onClick={() => dispatch({ type: "took_hint" })}>Take hint</button>
+                <button onClick={() => dispatch({ type: "took_hint" })}>💡 Take a hint</button>
             </div>
             <div className={[styles.finishWrap, recognizedCities[0] === undefined || !showFinal ? styles.hidden : ""].join(" ")}>
                 <div

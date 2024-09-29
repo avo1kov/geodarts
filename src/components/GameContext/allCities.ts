@@ -327,7 +327,7 @@ export const citiesData: City[] = [
     { name: "Bukavu", id: "281", ll: [-2.5000, 28.8667], radius: 10 },
     { name: "Bafoussam", id: "282", ll: [5.4667, 10.4167], radius: 10 },
     { name: "Benin City", id: "283", ll: [6.3333, 5.6222], radius: 10 },
-    { name: "Rostov", id: "284", ll: [47.2333, 39.7000], radius: 10 },
+    { name: "Rostov-on-Don", id: "284", ll: [47.2333, 39.7000], radius: 10 },
     { name: "Callao", id: "285", ll: [-12.0333, -77.1333], radius: 10 },
     { name: "Salt Lake City", id: "286", ll: [40.7776, -111.9311], radius: 10 },
     { name: "Tbilisi", id: "287", ll: [41.7225, 44.7925], radius: 10 },
