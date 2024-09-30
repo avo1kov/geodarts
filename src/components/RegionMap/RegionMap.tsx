@@ -1,5 +1,6 @@
 import React from "react"
 import Map, { Layer, NavigationControl, Marker } from "react-map-gl"
+import { LngLat } from "mapbox-gl"
 import maplibregl from "maplibre-gl"
 import styles from "./RegionMap.module.scss"
 import { fromJS } from "immutable"
@@ -8,24 +9,31 @@ import type { City } from "../../core/types"
 import MAP_STYLE from "./assets/months.json"
 
 import { isMobile } from "react-device-detect"
+import { Attempt, Round } from "../GameContext"
+import { RoadButton } from "../RoadButton"
 
 const defaultStyle = fromJS(MAP_STYLE)
 
 interface RegionMapProps {
+    allCities: City[],
     recognizedCities: City[],
-    attempts: City[],
-    hiddenCity: City | undefined
+    attempted: Attempt[],
+    hiddenCity: City | undefined,
+    hints: Round[],
+    onSuppose: (point: LngLat) => void,
+    onSupposeByMarker: (cityId: string) => void
 }
 
-export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, attempts, recognizedCities }) => {
+export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCities, attempted, allCities, hints, onSupposeByMarker, onSuppose }) => {
     return <div className={styles.rootOfMap}>
         <Map
             mapLib={maplibregl} 
-            initialViewState={{
-                bounds: [[36.282863, 43.013095], [41.813208, 47.489126]],
-            }}
+            // initialViewState={{
+            //     bounds: [[36.282863, 43.013095], [41.813208, 47.489126]],
+            // }}
             mapStyle={defaultStyle} // https://api.maptiler.com/maps/streets/style.json?key=h82LwnMs7FsmNItmCTPZ
             attributionControl={false}
+            onClick={(e) => onSuppose(e.lngLat)}
         >
             { !isMobile && <NavigationControl position="top-right" /> }
             <Layer
@@ -419,26 +427,91 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, attempts, reco
                     latitude={city.ll[0]}
                     longitude={city.ll[1]}
                     color="#32ade6"
-                    children={<div className={`${styles.marker} ${styles.blue}`}>
-                        <div className={styles.text}>{city.name}</div>
-                        <div className={styles.circle}></div>
-                    </div>}
+                    children={(
+                        <div className={`${styles.marker}`}>
+                            <div className={styles.arrow}>
+                                ✅
+                            </div>
+                            <div className={styles.text}>
+                                <RoadButton text={city.name.toUpperCase()} view="blue" fontSize={16} crossed></RoadButton>
+                            </div>
+                        </div>
+                    )}
                     key={index}
                 />
             )}
-            {attempts.map((attempt, index) => 
-                <Marker
-                    latitude={attempt.ll[0]}
-                    longitude={attempt.ll[1]}
-                    color="#32ade6"
-                    children={<div className={styles.marker}>
-                        <div className={styles.text}>{attempt.name}</div>
-                        <div className={styles.circle}></div>
-                    </div>}
-                    key={index}
-                />
-            )}
-            { hiddenCity && 
+            {
+                attempted.map((attempt, index) => 
+                    attempt.name === hiddenCity?.name || hiddenCity === undefined
+                        ?
+                        <Marker
+                            latitude={attempt.ll.lat}
+                            longitude={attempt.ll.lng}
+                            color="#32ade6"
+                            children={(
+                                <div className={styles.marker}>
+                                    {/* <div className={styles.arrow} style={{
+                                    transform: `translateY(-10px) rotate(${attempt.direction + 180}deg) translateY(10px)`
+                                }}> */}
+                                    <div className={styles.arrow} style={{
+                                        transform: `rotate(${attempt.direction + 180}deg)`
+                                    }}>
+                                    ⬇️
+                                    </div>
+
+                                    <div className={styles.text}>
+                                        {Math.ceil(attempt.distanceKm)} km
+                                    </div>
+                                    {/* <div className={styles.circle}></div> */}
+                                </div>
+                            // </div>
+                            )}
+                            key={index}
+                        />
+                        : null
+                )
+            }
+            {
+                hints.includes("cities")
+                    ? allCities.map((city, index) => {
+                        const attempt = attempted.find((a) => a.cityId === city.id)
+                        return attempt
+                            ? null
+                            : <Marker
+                                latitude={city.ll[0]}
+                                longitude={city.ll[1]}
+                                color="#32ade6"
+                                children={(
+                                    <div className={`${styles.marker}`}>
+                                        {/* <div className={styles.arrow} style={{
+                                    transform: `translateY(-10px) rotate(${attempt.direction + 180}deg) translateY(10px)`
+                                }}> */}
+                                        <div
+                                            className={`${styles.arrow} ${styles.option}`}
+                                            style={{
+                                            // transform: `rotate(${city.direction + 180}deg)`
+                                            }}      
+                                            onClick={(e) => {
+                                                onSupposeByMarker(city.id)
+                                                e.stopPropagation()
+                                            }}
+                                        >
+                                        🔘
+                                        </div>
+
+                                        {/* <div className={styles.text}>
+                                        {Math.ceil(city.distance)} km
+                                    </div> */}
+                                        {/* <div className={styles.circle}></div> */}
+                                    </div>
+                                    // </div>
+                                )}
+                                key={index}
+                            />
+                    })
+                    : null
+            }
+            {/* { hiddenCity && 
                 <Marker
                     latitude={hiddenCity.ll[0]}
                     longitude={hiddenCity.ll[1]}
@@ -447,7 +520,7 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, attempts, reco
                         <div className={styles.circle}></div>
                     </div>}
                 />
-            }
+            } */}
         </Map>
     </div>
 }
