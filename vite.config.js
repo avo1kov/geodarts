@@ -1,7 +1,6 @@
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 import path from "node:path"
-import legacy from "@vitejs/plugin-legacy"
 import viteCompression from "vite-plugin-compression"
 import { visualizer } from "rollup-plugin-visualizer"
 
@@ -18,12 +17,11 @@ export default defineConfig(({ mode }) => {
         },
         plugins: [
             react(), // Handles React fast refresh
-            __production__ && legacy(),
-            // viteCompression({
-            //     algorithm: "gzip",
-            //     threshold: 10240,
-            //     minRatio: 0.8,
-            // }),
+            __production__ && viteCompression({
+                algorithm: "gzip",
+                threshold: 10240,
+                minRatio: 0.8,
+            }),
             // visualizer({ open: true }) // Equivalent to webpack-bundle-analyzer
         ].filter(Boolean),
 
