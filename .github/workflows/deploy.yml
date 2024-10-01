@@ -31,3 +31,6 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local_folder: ./dist/
         remote_folder: /domains/volkov.media/public_html/test/geodarts/
+
+    - name: Link to instance
+      run: echo "http://volkov.media/test/geodarts/"
