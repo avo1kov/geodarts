@@ -18,9 +18,7 @@ export default defineConfig(({ mode }) => {
         },
         plugins: [
             react(), // Handles React fast refresh
-            // __production__ && legacy({
-            //     targets: ["defaults", "not IE 11"],
-            // }),
+            __production__ && legacy(),
             // viteCompression({
             //     algorithm: "gzip",
             //     threshold: 10240,
