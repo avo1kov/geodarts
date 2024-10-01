@@ -22,7 +22,7 @@ jobs:
     - name: Build project
       run: npm run build
 
-    - name: FTP Deployer
+    - name: FTP deploy
       uses: sand4rt/ftp-deployer@v1.8
       with:
         sftp: false
