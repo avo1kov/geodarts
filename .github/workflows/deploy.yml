@@ -1,0 +1,33 @@
+name: Build and deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build project
+      run: npm run build
+
+    - name: FTP Deployer
+      uses: sand4rt/ftp-deployer@v1.8
+      with:
+        sftp: false
+        host: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local_folder: ./dist/
+        remote_folder: /domains/volkov.media/public_html/test/geodarts/
