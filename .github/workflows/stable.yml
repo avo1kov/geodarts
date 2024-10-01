@@ -1,4 +1,4 @@
-name: Build and deploy
+name: "[stable] Release"
 
 on:
   workflow_dispatch:
@@ -22,7 +22,7 @@ jobs:
     - name: Build project
       run: npm run build
 
-    - name: FTP deploy
+    - name: Deploy
       uses: sand4rt/ftp-deployer@v1.8
       with:
         sftp: false
@@ -30,7 +30,7 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         local_folder: ./dist/
-        remote_folder: /domains/volkov.media/public_html/test/geodarts/
+        remote_folder: /domains/volkov.media/public_html/geodarts/
 
     - name: Link to instance
       run: echo "http://volkov.media/test/geodarts/"

@@ -2,21 +2,22 @@ import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 import path from "node:path"
 import viteCompression from "vite-plugin-compression"
-import { visualizer } from "rollup-plugin-visualizer"
+import { ViteEjsPlugin } from "vite-plugin-ejs"
+// import { visualizer } from "rollup-plugin-visualizer"
 
 export default defineConfig(({ mode }) => {
     const __production__ = mode === "production"
-    const indexHtmlPath = __production__ ? "src/index-prod.html" : "src/index-dev.html"
-    console.log("MOD PRODUCTION=", __production__, "indexHtmlPath=", indexHtmlPath)
 
     return {
         root: "src",
-        base: __production__ ? "/test/geodarts/" : "/",
         build: {
             outDir: "../dist",
         },
         plugins: [
             react(), // Handles React fast refresh
+            ViteEjsPlugin({
+                __production__
+            }),
             __production__ && viteCompression({
                 algorithm: "gzip",
                 threshold: 10240,
