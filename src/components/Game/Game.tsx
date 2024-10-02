@@ -195,12 +195,12 @@ export const Game: React.FC = () => {
                         hints.length > 0
                             ? (
                                 <div className={styles.hints}>
-                                    Used <b>{hints.length} hints</b>
+                                    Used a hint ;)
                                 </div>
                             ) : null
                     }
                     <div className={styles.dev}>
-                        This is <b>development version</b> of game. If you want to get notification after release, please, text me to <a href="mailto: to@agvolkov.ru">to@agvolkov.ru</a>
+                        This is <b>development version</b> of the game. If you want to get the notification after release, please, text me to <a href="mailto: to@agvolkov.ru">to@agvolkov.ru</a>
                     </div>
                     <details className={styles.recommendations}>
                         <summary className={styles.summary}>Similar games from other developers</summary>
