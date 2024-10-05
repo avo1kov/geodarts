@@ -16,7 +16,7 @@ jobs:
           --header 'Content-Type: application/json' \
           --data '{
               "chat_id": "${{ secrets.TG_DEPLOYMENTS_CHANNEL_ID }}",
-              "text": "`🐴🎨🎬` 🎯 GeoDarts frontend testing [action](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) started",
+              "text": "🎬, `🐴🎨`: 🎯 GeoDarts frontend testing [action](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) started",
               "parse_mode": "MarkdownV2"
           }'
 
@@ -40,7 +40,7 @@ jobs:
           --header 'Content-Type: application/json' \
           --data '{
               "chat_id": "${{ secrets.TG_DEPLOYMENTS_CHANNEL_ID }}",
-              "text": "`🐴🎨📤` 🎯 GeoDarts frontend testing [deploy](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) started",
+              "text": "📤, `🐴🎨`: 🎯 GeoDarts frontend testing [deploy](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) started",
               "parse_mode": "MarkdownV2"
           }'
 
@@ -60,7 +60,7 @@ jobs:
           --header 'Content-Type: application/json' \
           --data '{
               "chat_id": "${{ secrets.TG_DEPLOYMENTS_CHANNEL_ID }}",
-              "text": "`🐴🎨🏁` 🎯 GeoDarts frontend testing [action](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) finished",
+              "text": "🏁, `🐴🎨`: 🎯 GeoDarts frontend testing [action](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) finished",
               "parse_mode": "MarkdownV2"
           }'
 
