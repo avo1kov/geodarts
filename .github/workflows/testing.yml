@@ -1,13 +1,24 @@
 name: "[testing] Release"
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Telegram notification
+      run: |
+        curl --location --request GET 'https://api.telegram.org/bot${{ secrets.TG_DEPLOYMENTS_BOT_TOKEN }}/sendMessage' \
+          --header 'Content-Type: application/json' \
+          --data '{
+              "chat_id": "${{ secrets.TG_DEPLOYMENTS_CHANNEL_ID }}",
+              "text": "`🐴🎨🎬` 🎯 GeoDarts frontend testing [action](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) started",
+              "parse_mode": "MarkdownV2"
+          }'
+
     - name: Checkout Repository
       uses: actions/checkout@v4
     
@@ -22,6 +33,16 @@ jobs:
     - name: Build project
       run: npm run build:testing
 
+    - name: Telegram notification
+      run: |
+        curl --location --request GET 'https://api.telegram.org/bot${{ secrets.TG_DEPLOYMENTS_BOT_TOKEN }}/sendMessage' \
+          --header 'Content-Type: application/json' \
+          --data '{
+              "chat_id": "${{ secrets.TG_DEPLOYMENTS_CHANNEL_ID }}",
+              "text": "`🐴🎨📤` 🎯 GeoDarts frontend testing [deploy](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) started",
+              "parse_mode": "MarkdownV2"
+          }'
+
     - name: Deploy
       uses: sand4rt/ftp-deployer@v1.8
       with:
@@ -31,6 +52,16 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local_folder: ./dist/
         remote_folder: /domains/volkov.media/public_html/test/geodarts/
+
+    - name: Telegram notification
+      run: |
+        curl --location --request GET 'https://api.telegram.org/bot${{ secrets.TG_DEPLOYMENTS_BOT_TOKEN }}/sendMessage' \
+          --header 'Content-Type: application/json' \
+          --data '{
+              "chat_id": "${{ secrets.TG_DEPLOYMENTS_CHANNEL_ID }}",
+              "text": "`🐴🎨🏁` 🎯 GeoDarts frontend testing [action](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) finished",
+              "parse_mode": "MarkdownV2"
+          }'
 
     - name: Link to instance
       run: echo "http://volkov.media/test/geodarts/"
