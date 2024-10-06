@@ -1,0 +1,39 @@
+.currentCityWrapper {
+    z-index: 90;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    color: black;
+    width: 100%;
+
+    margin-top: 1vh;
+
+    &.mobile {
+        margin-top: 0;
+    }
+    
+}
+
+.currentCity {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    gap: 10px;
+    padding: 1vh 2.5vh;
+    border-radius: 5vh;
+    font-size: 32px;
+
+    &.mobile {
+        flex-direction: column;
+        width: 100%;
+        border-radius: 0;
+        align-items: center;
+        gap: 0.5vh;
+        padding: 0.5vh 0 2vh 0;
+        font-size: 26px;
+    }
+}

@@ -1,15 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react"
-import { isMobile } from "react-device-detect"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { LngLat } from "mapbox-gl"
 
 import { useGameContext, useGameDispanchContext } from "../GameContext"
 import { RegionMap } from "../RegionMap/RegionMap"
+import { Task } from "../Task"
 import { Result } from "../Result"
-import { RoadButton } from "../RoadButton"
+import { Footer } from "../Footer"
 
 import styles from "./Game.module.scss"
-
-import logo from "../../assets/logo@0.5x.png"
 
 export const Game: React.FC = () => {
     const dispatch = useGameDispanchContext()
@@ -57,6 +55,8 @@ export const Game: React.FC = () => {
         fetchDailyCity()
         fetchAllCities()
     }, [dispatch])
+    
+    const isGameFinished = useMemo(() => recognizedCities[0] !== undefined, [recognizedCities])
 
     const onSupposeByMarker = useCallback((cityId: number) => {
         if (!hiddenCity) {
@@ -119,60 +119,17 @@ export const Game: React.FC = () => {
             <div className={styles.hintWrapper}>
                 <button onClick={() => dispatch({ type: "took_hint" })}>💡 Take a hint</button>
             </div>
-            { recognizedCities[0] === undefined || !showFinal
-                ? null
-                : (
-                    <Result
-                        sumDistance={sumDistance}
-                        recognizedCities={recognizedCities}
-                        showFinal={showFinal}
-                        hints={hints}
-                        setShowFinal={setShowFinal}
-                    />
-                )
-            }
-            {
-                recognizedCities[0] === undefined
-                    ?
-                    <div className={[styles.currentCityWrapper, isMobile ? styles.mobile : ""].join(" ")}>
-                        <div className={[styles.currentCity, isMobile ? styles.mobile : ""].join(" ")}>
-                            {
-                                hiddenCity
-                                    ?
-                                    isMobile
-                                        ?
-                                        <>
-                                        Tap the city on map
-                                            <RoadButton
-                                                view="blue"
-                                                fontSize={32}
-                                            >
-                                                { hiddenCity?.name.toUpperCase() }
-                                            </RoadButton>
-                                        </>
-                                        :
-                                        <>
-                                        Click the
-                                            <RoadButton
-                                                view="blue"
-                                                fontSize={32}
-                                            >
-                                                { hiddenCity?.name.toUpperCase() }
-                                            </RoadButton>
-                                        on map
-                                        </>
-                                    : (
-                                        <div>the city is loading...</div>
-                                    )
-                            }
-                        </div>
-                    </div>
-                    : null
-            }
-            <div className={[styles.author, isMobile ? styles.mobile : ""].join(" ")}>
-                <img src={logo} className={styles.logo} />
-                by <a href="https://volkov.media" target="_blank">Alexander Volkov</a>
-            </div>
+            { isGameFinished && showFinal && (
+                <Result
+                    sumDistance={sumDistance}
+                    recognizedCities={recognizedCities}
+                    showFinal={showFinal}
+                    hints={hints}
+                    setShowFinal={setShowFinal}
+                />
+            )}
+            { !isGameFinished && <Task hiddenCity={hiddenCity} /> }
+            <Footer />
         </div>
     )
 }
