@@ -16,6 +16,7 @@ export interface ReadButtonProps {
     borderWidth?: number;
     accentColor?: string;
     fontSize?: number;
+    doNumberFormat?: boolean;
 }
 
 export function RoadButton({
@@ -29,10 +30,11 @@ export function RoadButton({
     clickable,
     title = text,
     className,
-    borderRadius = 0,
+    borderRadius,
     borderWidth,
     accentColor,
-    fontSize = 22
+    fontSize = 22,
+    doNumberFormat = false
 }: ReadButtonProps) {
     const viewStyle = useMemo(() => {
         switch (view) {
@@ -63,8 +65,8 @@ export function RoadButton({
                 ].join(" ")
             }
             style={{
-                borderRadius: borderRadius,
-                borderWidth: borderWidth
+                ...(borderRadius ? { borderRadius: borderRadius } : {}),
+                ...(borderWidth ? { borderWidth: borderWidth } : {}),
             }}
             onClick={onClick}
             title={title}
@@ -72,7 +74,7 @@ export function RoadButton({
             <div
                 className={styles.inner}
                 style={{
-                    borderRadius: (borderRadius! - 1),
+                    ...(borderRadius ? { borderRadius: ((borderRadius ?? 1) - 1) } : {}),
                     borderWidth: borderWidth,
                     borderColor: accentColor,
                     padding: `0 ${fontSize / 2}px`

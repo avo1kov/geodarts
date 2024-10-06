@@ -1,82 +1,64 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import styles from "./Game.module.scss"
-import { RegionMap } from "../RegionMap/RegionMap"
-
-import type { City } from "../../core/types"
+import React, { useCallback, useEffect, useState } from "react"
 import { isMobile } from "react-device-detect"
-import { useGameContext, useGameDispanchContext } from "../GameContext"
-import { CitySign } from "../CitySign"
-import { ArrowDown, ArrowRight } from "../../assets/icons/Arrows"
-import { RoadButton } from "../RoadButton"
 import { LngLat } from "mapbox-gl"
+
+import { useGameContext, useGameDispanchContext } from "../GameContext"
+import { RegionMap } from "../RegionMap/RegionMap"
+import { Result } from "../Result"
+import { RoadButton } from "../RoadButton"
+
+import styles from "./Game.module.scss"
 
 import logo from "../../assets/logo@0.5x.png"
 
-const DEFAULT_RADIUS = 5
-
-// [lat, lng]
-
 export const Game: React.FC = () => {
-    // const [allHiddenCities, setAllHiddenCities] = useState<City[]>(fiveHiddenCities)
-    // const hiddenCity: City = useMemo(() => (allHiddenCities[0] || citiesData[0]) as unknown as City, [allHiddenCities])
-    // const [inputValue, setInputValue] = useState("")
-    // const [attempts, setAttempts] = useState<City[]>([])
-    // const [doneCities, setDoneCities] = useState<City[]>([])
-
-    // const { allCities, hiddenCityId } = useGameContext()
+    const dispatch = useGameDispanchContext()
+    
     const {
         allCities,
         hiddenCity,
         attempted,
         sumDistance,
         recognizedCities,
-        restHiddenCities,
         hints
     } = useGameContext()
 
     const [showFinal, setShowFinal] = useState(true)
 
-    const dispatch = useGameDispanchContext()
-    
-    // const [hoveredHint, setHoveredHint] = useState<number | undefined>(undefined)
+    useEffect(() => {
+        const fetchAllCities = async () => {
+            const res = await fetch("https://volkov.media/test/geodarts-server/api/get_all_cities.php")
+            const cities = await res.json()
 
-    // const makeCity = useCallback(() => {
-    //     if (allHiddenCities.length > 1) {
-    //         setAllHiddenCities((state) => state.slice(1))
-    //     } else {
-    //         alert("Всё")
-    //     }
-    // }, [allHiddenCities])
+            dispatch({
+                type: "set_all_cities",
+                cities: cities.map((city: any) => ({
+                    id: city.id,
+                    name: city.name,
+                    ll: new LngLat(city.longitude, city.latitude),
+                    radiusKm: city.radius
+                }))
+            })
+        }
 
-    // const finishGame = useCallback(() => {
-    //     setDoneCities([...doneCities, hiddenCity])
-    //     makeCity()
-    //     setAttempts([])
-    //     setInputValue("")
-    //     setAnswerHint("")
-    // }, [doneCities, hiddenCity, makeCity])
+        const fetchDailyCity = async () => {
+            const res = await fetch("https://volkov.media/test/geodarts-server/api/get_daily_city.php")
+            const dailyCity = await res.json()
 
-    // useEffect(() => {
-    //     if (compareCityNames(answerHint, hiddenCity.name)) {
-    //         finishGame()
-    //     }
-    // }, [answerHint, finishGame, hiddenCity.name])
+            dispatch({
+                type: "set_hidden_city",
+                id: dailyCity.id,
+                name: dailyCity.name,
+                ll: new LngLat(dailyCity.longitude, dailyCity.latitude),
+                radiusKm: dailyCity.radius
+            })
+        }
 
-    // useEffect(() => {
-    //     document.addEventListener("keyup", (e) => {
-    //         if (e.key.length === 1 && !isFocused) {
-    //             inputRef.current?.focus()
-    //             inputRef.current?.dispatchEvent(new KeyboardEvent("keydown", e))
-    //         }
-    //     })
-    // }, [isFocused])
+        fetchDailyCity()
+        fetchAllCities()
+    }, [dispatch])
 
-    const remainCitiesNumber = useMemo(
-        () => restHiddenCities.length + (hiddenCity !== undefined ? 1 : 0),
-        [hiddenCity, restHiddenCities.length]
-    )
-
-    const onSupposeByMarker = useCallback((cityId: string) => {
+    const onSupposeByMarker = useCallback((cityId: number) => {
         if (!hiddenCity) {
             return
         }
@@ -85,14 +67,12 @@ export const Game: React.FC = () => {
 
         if (!city) { return }
 
-        const attemptedPoint = new LngLat(city.ll[1], city.ll[0])
+        const attemptedPoint = city.ll
+        const hiddenPoint = hiddenCity.ll
 
-        const hiddenPoint = new LngLat(hiddenCity.ll[1], hiddenCity.ll[0])
         const distanceKm = attemptedPoint.distanceTo(hiddenPoint) / 1000
 
         const degree = bearing(attemptedPoint.lat, attemptedPoint.lng, hiddenPoint.lat, hiddenPoint.lng)
-
-        console.log(attemptedPoint, hiddenPoint, degree)
 
         dispatch({
             type: "attempted",
@@ -100,7 +80,7 @@ export const Game: React.FC = () => {
             ll: attemptedPoint,
             name: hiddenCity.name,
             direction: degree,
-            cityId
+            id: cityId
         })
 
     }, [allCities, dispatch, hiddenCity])
@@ -110,12 +90,10 @@ export const Game: React.FC = () => {
             return
         }
 
-        const hiddenPoint = new LngLat(hiddenCity.ll[1], hiddenCity.ll[0])
+        const hiddenPoint = hiddenCity.ll
         const distanceKm = attemptedPoint.distanceTo(hiddenPoint) / 1000
 
         const degree = bearing(attemptedPoint.lat, attemptedPoint.lng, hiddenPoint.lat, hiddenPoint.lng)
-
-        console.log(attemptedPoint, hiddenPoint, degree)
 
         dispatch({
             type: "attempted",
@@ -138,82 +116,21 @@ export const Game: React.FC = () => {
                 onSuppose={onSuppose}
                 hints={hints}
             />
-            {/* <div className={styles.info}>
-                <div className={[styles.recognized, isMobile ? styles.mobile : ""].join(" ")}>
-                    {recognizedCities.map((city) => {
-                        return (
-                            <a href={city.wikilink} target="_blank" className={styles.link}>
-                                <CitySign
-                                    text={city.name.toUpperCase()}
-                                    crossOnHover={city.wikilink !== undefined && !isMobile}
-                                    shiftOnHover={city.wikilink !== undefined && !isMobile}
-                                    crossed={city.wikilink === undefined || isMobile}
-                                    view="blue"
-                                    clickable
-                                />
-                            </a>
-                        )
-                    })}
-                    {
-                        remainCitiesNumber > 0
-                            ?
-                            <RoadButton className={styles.restCitiesNumber}>
-                                {isMobile ? undefined : <ArrowDown />}
-                                {"Осталось " + remainCitiesNumber}
-                                {isMobile ? <ArrowRight /> : <ArrowDown /> }
-                            </RoadButton>
-                            : 
-                            null
-                    }
-                </div>
-            </div> */}
             <div className={styles.hintWrapper}>
                 <button onClick={() => dispatch({ type: "took_hint" })}>💡 Take a hint</button>
             </div>
-            <div className={[styles.finishWrap, recognizedCities[0] === undefined || !showFinal ? styles.hidden : ""].join(" ")}>
-                <div
-                    className={[
-                        styles.finish,
-                        isMobile ? styles.mobile : "",
-                        recognizedCities[0] === undefined || !showFinal ? styles.hidden : ""
-                    ].join(" ")}
-                >
-                    <div className={styles.title}>
-                        <div>🎉 Yeah! You have completed ✅</div>
-                        <div>the game #205</div>
-                    </div>
-                    <div className={styles.results}>
-                            You made mistakes for <RoadButton text={`${Math.ceil(sumDistance)} km`} fontSize={isMobile ? 16 : 22} />
-                    </div>
-                    <RoadButton
-                        view="blue"
-                        text={recognizedCities[0]?.name.toUpperCase() ?? ""}
-                        fontSize={28}
-                        crossed
+            { recognizedCities[0] === undefined || !showFinal
+                ? null
+                : (
+                    <Result
+                        sumDistance={sumDistance}
+                        recognizedCities={recognizedCities}
+                        showFinal={showFinal}
+                        hints={hints}
+                        setShowFinal={setShowFinal}
                     />
-                    {
-                        hints.length > 0
-                            ? (
-                                <div className={styles.hints}>
-                                    Used a hint ;)
-                                </div>
-                            ) : null
-                    }
-                    <div className={styles.dev}>
-                        This is <b>development version</b> of the game. If you want to get the notification after release, please, text me to <a href="mailto: to@agvolkov.ru">to@agvolkov.ru</a>
-                    </div>
-                    <details className={styles.recommendations}>
-                        <summary className={styles.summary}>Similar games from other developers</summary>
-                        <div className={styles.listOfGames}>
-                            <a href="https://travle.earth/" target="_blank">travle</a>
-                            <a href="https://worldle.teuteuf.fr/" target="_blank">worldle</a>
-                            <a href="https://wheretaken.teuteuf.fr/" target="_blank">Where Taken</a>
-                            <a href="https://world-geography-games.com/en/flags_world.html" target="_blank">Country Flags Quiz</a>
-                        </div>
-                    </details>
-                    <div className={styles.hideButton} onClick={() => setShowFinal(false)}>[<a href="#">Hide</a>]</div>
-                </div>
-            </div>
+                )
+            }
             {
                 recognizedCities[0] === undefined
                     ?
@@ -244,7 +161,9 @@ export const Game: React.FC = () => {
                                             </RoadButton>
                                         on map
                                         </>
-                                    : null
+                                    : (
+                                        <div>the city is loading...</div>
+                                    )
                             }
                         </div>
                     </div>

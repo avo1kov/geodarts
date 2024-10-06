@@ -1,7 +1,9 @@
+import { LngLat } from "mapbox-gl"
+
 export interface City {
     name: string;
-    id: string;
-    ll: [number, number];
+    id: number;
+    ll: LngLat;
     wikilink?: string;
     radius?: number;
     attempted?: {

@@ -1,16 +1,17 @@
-import React from "react"
+import React, { useEffect } from "react"
 import Map, { Layer, NavigationControl, Marker } from "react-map-gl"
 import { LngLat } from "mapbox-gl"
 import maplibregl from "maplibre-gl"
-import styles from "./RegionMap.module.scss"
+import { isMobile } from "react-device-detect"
 import { fromJS } from "immutable"
+
+import { RoadButton } from "../RoadButton"
+import { Attempt, Round } from "../GameContext"
 import type { City } from "../../core/types"
 
-import MAP_STYLE from "./assets/months.json"
+import styles from "./RegionMap.module.scss"
 
-import { isMobile } from "react-device-detect"
-import { Attempt, Round } from "../GameContext"
-import { RoadButton } from "../RoadButton"
+import MAP_STYLE from "./assets/months.json"
 
 const defaultStyle = fromJS(MAP_STYLE)
 
@@ -21,10 +22,10 @@ interface RegionMapProps {
     hiddenCity: City | undefined,
     hints: Round[],
     onSuppose: (point: LngLat) => void,
-    onSupposeByMarker: (cityId: string) => void
+    onSupposeByMarker: (cityId: number) => void
 }
 
-export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCities, attempted, allCities, hints, onSupposeByMarker, onSuppose }) => {
+export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCities, attempted, allCities, hints, onSupposeByMarker, onSuppose }) => {    
     return <div className={styles.rootOfMap}>
         <Map
             mapLib={maplibregl} 
@@ -424,8 +425,8 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCiti
             />
             {recognizedCities.map((city, index) => 
                 <Marker
-                    latitude={city.ll[0]}
-                    longitude={city.ll[1]}
+                    latitude={city.ll.lat}
+                    longitude={city.ll.lng}
                     color="#32ade6"
                     children={(
                         <div className={`${styles.marker}`}>
@@ -475,11 +476,12 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCiti
                 hints.includes("cities")
                     ? allCities.map((city, index) => {
                         const attempt = attempted.find((a) => a.cityId === city.id)
+                        
                         return attempt
                             ? null
                             : <Marker
-                                latitude={city.ll[0]}
-                                longitude={city.ll[1]}
+                                latitude={city.ll.lat}
+                                longitude={city.ll.lng}
                                 color="#32ade6"
                                 children={(
                                     <div className={`${styles.marker}`}>
