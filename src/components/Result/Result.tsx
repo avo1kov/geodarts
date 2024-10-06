@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 
 import { RoadButton } from "../RoadButton"
 import { isMobile } from "react-device-detect"
@@ -10,6 +10,9 @@ interface ResultProps {
     recognizedCities: { name: string }[];
     hints: string[];
     showFinal: boolean;
+    dayNumber: number;
+    rank: number;
+    rankWithHints: number;
     setShowFinal: (showFinal: boolean) => void;
 }
 
@@ -18,6 +21,9 @@ export const Result: React.FC<ResultProps> = ({
     recognizedCities,
     hints,
     showFinal,
+    dayNumber,
+    rank,
+    rankWithHints,
     setShowFinal
 }) => {
     return (
@@ -30,16 +36,20 @@ export const Result: React.FC<ResultProps> = ({
                 ].join(" ")}
             >
                 <div className={styles.title}>
-                    <div>🎉 Yeah! You have completed ✅</div>
-                    <div>the game #205</div>
+                    <div>
+                        🎉 You're <span className={styles.rank}>
+                            {rank}{getOrdinalSuffix(rank)}
+                        </span> in today's top! ✅</div>
+                    {/* <div>the game #{dayNumber}</div> */}
                 </div>
                 <div className={styles.results}>
-                    You made mistakes for
+                    Accumulated mistakes over
                     <RoadButton
                         text={`${formatNumberWithCommas(Math.ceil(sumDistanceKm))} km`}
                         fontSize={isMobile ? 16 : 22}
                         doNumberFormat
                     />
+                    {sumDistanceKm === 0 ? "🤯" : ""}
                 </div>
                 <RoadButton
                     view="blue"
@@ -55,6 +65,9 @@ export const Result: React.FC<ResultProps> = ({
                             </div>
                         ) : null
                 }
+                {/* <div className={styles.rank}>
+                    Your place in today's top: <b>{rank}</b>{hints.length > 0 ? ", but you used hints ;)" : ""}
+                </div> */}
                 {/* <div className={styles.dev}>
                         This is <b>development version</b> of the game. If you want to get the notification after release, please, text me to <a href="mailto: to@agvolkov.ru">to@agvolkov.ru</a>
                 </div> */}
@@ -79,4 +92,19 @@ function formatNumberWithCommas(num: number) {
     }
     
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+}
+
+function getOrdinalSuffix(rank: number) {
+    const j = rank % 10,
+        k = rank % 100
+    if (j === 1 && k !== 11) {
+        return "st"
+    }
+    if (j === 2 && k !== 12) {
+        return "nd"
+    }
+    if (j === 3 && k !== 13) {
+        return "rd"
+    }
+    return "th"
 }

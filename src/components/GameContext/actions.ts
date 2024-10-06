@@ -2,15 +2,16 @@ import {
     GameContextType,
     GameDispatchAttemptedActionType,
     GameDispatchSetAllCitiesActionType,
-    GameDispatchSetHiddenCityActionType
+    GameDispatchInitGameActionType
 } from "./GameContext"
 
 const DEFAULT_RADIUS = 10
 
-export function setHiddenCity(game: GameContextType, action: GameDispatchSetHiddenCityActionType): GameContextType {
+export function initGame(game: GameContextType, action: GameDispatchInitGameActionType): GameContextType {
     return {
         ...game,
-        hiddenCity: action
+        hiddenCity: action, // TODO: omit dayNumber here
+        dayNumber: action.dayNumber,
     }
 }
 

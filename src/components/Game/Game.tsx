@@ -9,6 +9,8 @@ import { Footer } from "../Footer"
 
 import styles from "./Game.module.scss"
 
+const TODAY = new Date().toISOString().split("T")[0]
+
 export const Game: React.FC = () => {
     const dispatch = useGameDispanchContext()
     
@@ -18,10 +20,14 @@ export const Game: React.FC = () => {
         attempts,
         distanceMistakesKm,
         recognizedCities,
-        hints
+        hints,
+        dayNumber
     } = useGameContext()
 
     const [showFinal, setShowFinal] = useState(true)
+    const [rank, setRank] = useState(0)
+    const [rankWithHints, setRankWithHints] = useState(0)
+    const [isStatsSent, setIsStatsSent] = useState(false)
 
     useEffect(() => {
         const fetchAllCities = async () => {
@@ -44,11 +50,12 @@ export const Game: React.FC = () => {
             const dailyCity = await res.json()
 
             dispatch({
-                type: "set_hidden_city",
+                type: "init_game",
                 id: dailyCity.id,
+                dayNumber: dailyCity.day_number,
                 name: dailyCity.name,
                 ll: new LngLat(dailyCity.longitude, dailyCity.latitude),
-                radiusKm: dailyCity.radius
+                radiusKm: dailyCity.radius_km
             })
         }
 
@@ -56,11 +63,23 @@ export const Game: React.FC = () => {
         fetchAllCities()
     }, [dispatch])
     
-    const isGameFinished = useMemo(() => recognizedCities[0] !== undefined, [recognizedCities])
-    const [isStatsSent, setIsStatsSent] = useState(false)
+    const isGameFinished = useMemo(() => {
+        console.log({ recognizedCities })
+        return recognizedCities[0] !== undefined
+    }, [recognizedCities])
 
     useEffect(() => {
-        console.log("isGameFinished", isGameFinished)
+        async function getRank() {
+            return fetch(`https://volkov.media/test/geodarts-server/api/get_rank.php?localDate=${TODAY}&distanceMistakesKm=${distanceMistakesKm}`)
+                .then(res => res.json())
+                .then(data => {
+                    setRank(data.rankWithNoHints)
+                    setRankWithHints(data.rankWithHints)
+                })
+        }
+
+        getRank()
+
         if (isGameFinished && !isStatsSent) {
             fetch("https://volkov.media/test/geodarts-server/api/finish_game.php", {
                 method: "POST",
@@ -71,7 +90,7 @@ export const Game: React.FC = () => {
                     distanceMistakesKm,
                     attempts: attempts.length,
                     hints: hints.length,
-                    localDate: new Date().toISOString().split("T")[0],
+                    localDate: TODAY,
                     cityId: hiddenCity?.id
                 })
             })
@@ -147,6 +166,9 @@ export const Game: React.FC = () => {
                     recognizedCities={recognizedCities}
                     showFinal={showFinal}
                     hints={hints}
+                    dayNumber={dayNumber}
+                    rank={rank}
+                    rankWithHints={rankWithHints}
                     setShowFinal={setShowFinal}
                 />
             )}

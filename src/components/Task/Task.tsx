@@ -20,24 +20,26 @@ export const Task: React.FC<TaskProps> = ({ hiddenCity }) => {
                         isMobile
                             ?
                             <>
-                                Tap the city on map
+                                Find
                                 <RoadButton
                                     view="blue"
                                     fontSize={32}
                                 >
                                     { hiddenCity?.name.toUpperCase() }
                                 </RoadButton>
+                                and tap it!
                             </>
                             :
                             <>
-                                Click the
+                                Find
                                 <RoadButton
                                     view="blue"
                                     fontSize={32}
                                 >
                                     { hiddenCity?.name.toUpperCase() }
                                 </RoadButton>
-                                on map
+                                and click it!
+                                {/* on the map */}
                             </>
                         : (
                             <div>the city is loading...</div>
