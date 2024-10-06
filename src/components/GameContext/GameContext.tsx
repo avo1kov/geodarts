@@ -15,9 +15,9 @@ export interface Attempt {
 
 export interface GameContextType {
     allCities: City[],
-    sumDistance: number,
+    distanceMistakesKm: number,
     hiddenCity: City | undefined,
-    attempted: Attempt[],
+    attempts: Attempt[],
     recognizedCities: City[],
     round: Round,
     hints: Round[],
@@ -73,10 +73,10 @@ function gameReducer(game: GameContextType, action: GameDispatchActionType) {
 
 const initGameState: GameContextType = {
     allCities: [],
-    sumDistance: 0,
+    distanceMistakesKm: 0,
     hiddenCity: undefined, // undefined, // hiddenCities[0]!,
     // restHiddenCities: hiddenCities.slice(1), // TODO: must be gotten from server
-    attempted: [],
+    attempts: [],
     recognizedCities: [], //[citiesData[Math.floor(Math.random() * citiesData.length)]!], // [citiesData[Math.floor(Math.random() * citiesData.length)]!] // [0, 1, 6, 8, 10].map((i) => citiesData[i]!)
     hints: [],
     round: "cities"

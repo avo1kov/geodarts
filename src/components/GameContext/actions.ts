@@ -27,9 +27,9 @@ export function attempt(game: GameContextType, action: GameDispatchAttemptedActi
     } else {
         return {
             ...game,
-            sumDistance: game.sumDistance + action.distanceKm,
-            attempted: [
-                ...game.attempted,
+            distanceMistakesKm: game.distanceMistakesKm + Math.ceil(action.distanceKm),
+            attempts: [
+                ...game.attempts,
                 {
                     ll: action.ll,
                     distanceKm: action.distanceKm,

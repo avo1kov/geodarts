@@ -6,7 +6,7 @@ import { isMobile } from "react-device-detect"
 import styles from "./Result.module.scss"
 
 interface ResultProps {
-    sumDistance: number;
+    sumDistanceKm: number;
     recognizedCities: { name: string }[];
     hints: string[];
     showFinal: boolean;
@@ -14,7 +14,7 @@ interface ResultProps {
 }
 
 export const Result: React.FC<ResultProps> = ({
-    sumDistance,
+    sumDistanceKm,
     recognizedCities,
     hints,
     showFinal,
@@ -36,7 +36,7 @@ export const Result: React.FC<ResultProps> = ({
                 <div className={styles.results}>
                     You made mistakes for
                     <RoadButton
-                        text={`${formatNumberWithCommas(Math.ceil(sumDistance))} km`}
+                        text={`${formatNumberWithCommas(Math.ceil(sumDistanceKm))} km`}
                         fontSize={isMobile ? 16 : 22}
                         doNumberFormat
                     />

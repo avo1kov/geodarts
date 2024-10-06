@@ -15,8 +15,8 @@ export const Game: React.FC = () => {
     const {
         allCities,
         hiddenCity,
-        attempted,
-        sumDistance,
+        attempts,
+        distanceMistakesKm,
         recognizedCities,
         hints
     } = useGameContext()
@@ -57,6 +57,28 @@ export const Game: React.FC = () => {
     }, [dispatch])
     
     const isGameFinished = useMemo(() => recognizedCities[0] !== undefined, [recognizedCities])
+    const [isStatsSent, setIsStatsSent] = useState(false)
+
+    useEffect(() => {
+        console.log("isGameFinished", isGameFinished)
+        if (isGameFinished && !isStatsSent) {
+            fetch("https://volkov.media/test/geodarts-server/api/finish_game.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    distanceMistakesKm,
+                    attempts: attempts.length,
+                    hints: hints.length,
+                    localDate: new Date().toISOString().split("T")[0],
+                    cityId: hiddenCity?.id
+                })
+            })
+
+            setIsStatsSent(true)
+        }
+    }, [hints, isGameFinished, isStatsSent, recognizedCities, distanceMistakesKm, attempts.length, hiddenCity?.id])
 
     const onSupposeByMarker = useCallback((cityId: number) => {
         if (!hiddenCity) {
@@ -110,7 +132,7 @@ export const Game: React.FC = () => {
             <RegionMap
                 allCities={allCities}
                 hiddenCity={hiddenCity}
-                attempted={attempted}
+                attempted={attempts}
                 recognizedCities={recognizedCities}
                 onSupposeByMarker={onSupposeByMarker}
                 onSuppose={onSuppose}
@@ -121,7 +143,7 @@ export const Game: React.FC = () => {
             </div>
             { isGameFinished && showFinal && (
                 <Result
-                    sumDistance={sumDistance}
+                    sumDistanceKm={distanceMistakesKm}
                     recognizedCities={recognizedCities}
                     showFinal={showFinal}
                     hints={hints}
