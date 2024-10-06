@@ -54,7 +54,8 @@ export const Result: React.FC<ResultProps> = ({
                 <RoadButton
                     view="blue"
                     text={recognizedCities[0]?.name.toUpperCase() ?? ""}
-                    fontSize={28}
+                    fontSize={40}
+                    borderRadius={7}
                     crossed
                 />
                 {
