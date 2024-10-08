@@ -87,7 +87,7 @@ function gameReducer(game: GameContextType, action: GameDispatchActionType) {
     }
 }
 
-const FIXED_FINISH = true
+const FIXED_FINISH = false
 
 const initGameState: GameContextType = FIXED_FINISH
     ? {
