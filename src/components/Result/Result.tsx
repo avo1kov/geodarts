@@ -4,6 +4,7 @@ import { RoadButton } from "../RoadButton"
 import { isMobile } from "react-device-detect"
 
 import styles from "./Result.module.scss"
+import { GameMode, useGameDispanchContext } from "../GameContext"
 
 interface ResultProps {
     sumDistanceKm: number;
@@ -13,6 +14,7 @@ interface ResultProps {
     dayNumber: number;
     rank: number;
     rankWithHints: number;
+    mode: GameMode;
     setShowFinal: (showFinal: boolean) => void;
 }
 
@@ -24,8 +26,11 @@ export const Result: React.FC<ResultProps> = ({
     dayNumber,
     rank,
     rankWithHints,
+    mode,
     setShowFinal
 }) => {
+    const dispatch = useGameDispanchContext()
+    
     return (
         <div className={styles.finishWrap}>
             <div
@@ -36,10 +41,17 @@ export const Result: React.FC<ResultProps> = ({
                 ].join(" ")}
             >
                 <div className={styles.title}>
-                    <div>
+                    { mode === GameMode.Game ? (
+                        <div>
                         🎉 You're <span className={styles.rank}>
-                            {rank}{getOrdinalSuffix(rank)}
-                        </span> in today's top! ✅</div>
+                                {rank}{getOrdinalSuffix(rank)}
+                            </span> in today's top! ✅
+                        </div>
+                    ) : (
+                        <div>
+                        🎉 You've done it! ✅
+                        </div>
+                    )}
                     {/* <div>the game #{dayNumber}</div> */}
                 </div>
                 <div className={styles.results}>
@@ -53,7 +65,7 @@ export const Result: React.FC<ResultProps> = ({
                 </div>
                 <RoadButton
                     view="blue"
-                    text={recognizedCities[0]?.name.toUpperCase() ?? ""}
+                    text={recognizedCities[recognizedCities.length - 1]?.name.toUpperCase() ?? ""}
                     fontSize={40}
                     borderRadius={7}
                     crossed
@@ -81,7 +93,18 @@ export const Result: React.FC<ResultProps> = ({
                         <a href="https://world-geography-games.com/en/flags_world.html" target="_blank">Country Flags Quiz</a>
                     </div>
                 </details>
-                <div className={styles.hideButton} onClick={() => setShowFinal(false)}>[<a href="#">Hide</a>]</div>
+                <div className={styles.buttons}>
+                    <div className={styles.button} onClick={() => dispatch({ type: "set_training_mode" })}>
+                        [{
+                            mode === GameMode.Game
+                                ? <a href="#">Training Mode</a>
+                                : <a href="#">Once Again!</a>
+                        }]
+                    </div>
+                    <div className={styles.button} onClick={() => setShowFinal(false)}>
+                    [<a href="#">Hide</a>]
+                    </div>
+                </div>
             </div>
         </div>
     )

@@ -2,7 +2,8 @@ import {
     GameContextType,
     GameDispatchAttemptedActionType,
     GameDispatchSetAllCitiesActionType,
-    GameDispatchInitGameActionType
+    GameDispatchInitGameActionType,
+    GameMode
 } from "./GameContext"
 
 const DEFAULT_RADIUS = 10
@@ -48,7 +49,8 @@ function finishGame(game: GameContextType): GameContextType {
         ...game,
         recognizedCities: game.hiddenCity
             ? [...game.recognizedCities, game.hiddenCity]
-            : game.recognizedCities
+            : game.recognizedCities,
+        hiddenCity: undefined
     }
 }
 
@@ -56,5 +58,13 @@ export function takeHint(game: GameContextType): GameContextType {
     return {
         ...game,
         hints: [...game.hints, game.round]
+    }
+}
+
+export function setTrainingMode(game: GameContextType): GameContextType {
+    return {
+        ...game,
+        mode: GameMode.Training,
+        hiddenCity: game.allCities[Math.floor(Math.random() * game.allCities.length)]
     }
 }

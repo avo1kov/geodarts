@@ -1,6 +1,6 @@
 import React, { ReactNode, createContext, useContext, useReducer } from "react"
 import { City } from "src/core/types"
-import { attempt, takeHint, initGame, setAllCities } from "./actions"
+import { attempt, takeHint, initGame, setAllCities, setTrainingMode } from "./actions"
 import { LngLat } from "mapbox-gl"
 
 export type Round = "cities" | "peaks" | "seas"
@@ -22,6 +22,12 @@ export interface GameContextType {
     round: Round,
     hints: Round[],
     dayNumber: number,
+    mode: GameMode,
+}
+
+export enum GameMode {
+    Game = "game",
+    Training = "training"
 }
 
 export interface GameDispatchAttemptedActionType {
@@ -51,10 +57,15 @@ export interface GameDispatchTookHintActionType {
     type: "took_hint",
 }
 
+export interface GameDispatchSetTrainingModeActionType {
+    type: "set_training_mode",
+}
+
 export type GameDispatchActionType = GameDispatchAttemptedActionType
     | GameDispatchTookHintActionType
     | GameDispatchInitGameActionType
     | GameDispatchSetAllCitiesActionType
+    | GameDispatchSetTrainingModeActionType
 
 function gameReducer(game: GameContextType, action: GameDispatchActionType) {
     switch (action.type) {
@@ -70,37 +81,44 @@ function gameReducer(game: GameContextType, action: GameDispatchActionType) {
     case "set_all_cities": {
         return setAllCities(game, action)
     }
+    case "set_training_mode": {
+        return setTrainingMode(game)
+    }
     }
 }
 
-const initGameState: GameContextType = {
-    allCities: [],
-    distanceMistakesKm: 0,
-    hiddenCity: undefined, // undefined, // hiddenCities[0]!,
-    dayNumber: 0,
-    // restHiddenCities: hiddenCities.slice(1), // TODO: must be gotten from server
-    attempts: [],
-    recognizedCities: [], //[citiesData[Math.floor(Math.random() * citiesData.length)]!], // [citiesData[Math.floor(Math.random() * citiesData.length)]!] // [0, 1, 6, 8, 10].map((i) => citiesData[i]!)
-    hints: [],
-    round: "cities"
-}
+const FIXED_FINISH = true
 
-// const initGameState: GameContextType = {
-//     allCities: [],
-//     distanceMistakesKm: 0,
-//     hiddenCity: undefined, // undefined, // hiddenCities[0]!,
-//     dayNumber: 0,
-//     // restHiddenCities: hiddenCities.slice(1), // TODO: must be gotten from server
-//     attempts: [],
-//     recognizedCities: [{
-//         id: 1,
-//         name: "Moscow",
-//         ll: new LngLat(37.6176, 55.7558),
-//         radius: 10
-//     }], //[citiesData[Math.floor(Math.random() * citiesData.length)]!], // [citiesData[Math.floor(Math.random() * citiesData.length)]!] // [0, 1, 6, 8, 10].map((i) => citiesData[i]!)
-//     hints: [],
-//     round: "cities"
-// }
+const initGameState: GameContextType = FIXED_FINISH
+    ? {
+        allCities: [],
+        distanceMistakesKm: 0,
+        hiddenCity: undefined, // undefined, // hiddenCities[0]!,
+        dayNumber: 0,
+        // restHiddenCities: hiddenCities.slice(1), // TODO: must be gotten from server
+        attempts: [],
+        recognizedCities: [{
+            id: 1,
+            name: "Moscow",
+            ll: new LngLat(37.6176, 55.7558),
+            radius: 10
+        }], //[citiesData[Math.floor(Math.random() * citiesData.length)]!], // [citiesData[Math.floor(Math.random() * citiesData.length)]!] // [0, 1, 6, 8, 10].map((i) => citiesData[i]!)
+        hints: [],
+        round: "cities",
+        mode: GameMode.Game
+    }
+    : {
+        allCities: [],
+        distanceMistakesKm: 0,
+        hiddenCity: undefined, // undefined, // hiddenCities[0]!,
+        dayNumber: 0,
+        // restHiddenCities: hiddenCities.slice(1), // TODO: must be gotten from server
+        attempts: [],
+        recognizedCities: [], //[citiesData[Math.floor(Math.random() * citiesData.length)]!], // [citiesData[Math.floor(Math.random() * citiesData.length)]!] // [0, 1, 6, 8, 10].map((i) => citiesData[i]!)
+        hints: [],
+        round: "cities",
+        mode: GameMode.Game
+    }
 
 export const GameContext = createContext<any>(initGameState)
 export const GameDispatchContext = createContext<any>(null)

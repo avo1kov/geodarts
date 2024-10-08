@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { LngLat } from "mapbox-gl"
 
-import { useGameContext, useGameDispanchContext } from "../GameContext"
+import { GameMode, useGameContext, useGameDispanchContext } from "../GameContext"
 import { RegionMap } from "../RegionMap/RegionMap"
 import { Task } from "../Task"
 import { Result } from "../Result"
@@ -21,7 +21,8 @@ export const Game: React.FC = () => {
         distanceMistakesKm,
         recognizedCities,
         hints,
-        dayNumber
+        dayNumber,
+        mode
     } = useGameContext()
 
     const [showFinal, setShowFinal] = useState(true)
@@ -64,9 +65,9 @@ export const Game: React.FC = () => {
     }, [dispatch])
     
     const isGameFinished = useMemo(() => {
-        console.log({ recognizedCities })
-        return recognizedCities[0] !== undefined
-    }, [recognizedCities])
+        console.log(".", { recognizedCities, hiddenCity })
+        return hiddenCity === undefined
+    }, [hiddenCity, recognizedCities])
 
     useEffect(() => {
         async function getRank() {
@@ -80,7 +81,7 @@ export const Game: React.FC = () => {
 
         getRank()
 
-        if (isGameFinished && !isStatsSent) {
+        if (isGameFinished && !isStatsSent && mode === GameMode.Game) {
             fetch("https://volkov.media/test/geodarts-server/api/finish_game.php", {
                 method: "POST",
                 headers: {
@@ -97,7 +98,7 @@ export const Game: React.FC = () => {
 
             setIsStatsSent(true)
         }
-    }, [hints, isGameFinished, isStatsSent, recognizedCities, distanceMistakesKm, attempts.length, hiddenCity?.id])
+    }, [hints, isGameFinished, isStatsSent, recognizedCities, distanceMistakesKm, attempts.length, hiddenCity?.id, mode])
 
     const onSupposeByMarker = useCallback((cityId: number) => {
         if (!hiddenCity) {
@@ -160,6 +161,7 @@ export const Game: React.FC = () => {
             <div className={styles.hintWrapper}>
                 <button onClick={() => dispatch({ type: "took_hint" })}>💡 Take a hint</button>
             </div>
+            { !isGameFinished && <Task hiddenCity={hiddenCity} /> }
             { isGameFinished && showFinal && (
                 <Result
                     sumDistanceKm={distanceMistakesKm}
@@ -170,9 +172,9 @@ export const Game: React.FC = () => {
                     rank={rank}
                     rankWithHints={rankWithHints}
                     setShowFinal={setShowFinal}
+                    mode={mode}
                 />
             )}
-            { !isGameFinished && <Task hiddenCity={hiddenCity} /> }
             <Footer />
         </div>
     )
