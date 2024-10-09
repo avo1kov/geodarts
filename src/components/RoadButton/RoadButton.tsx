@@ -88,7 +88,6 @@ export function RoadButton({
                         lineHeight: `${fontSize}px`,
                         paddingBottom: "1px",
                         wordSpacing: `${-fontSize / 4}px`
-                        // padding: `${fontSize / 1000}px 0`
                     }}
                 >
                     {children ?? text}
