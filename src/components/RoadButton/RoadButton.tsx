@@ -2,21 +2,21 @@ import React, { ReactNode, useMemo } from "react"
 import styles from "./RoadButton.module.scss"
 
 export interface ReadButtonProps {
-    text?: string;
-    crossed?: boolean;
-    crossOnHover?: boolean;
-    shiftOnHover?: boolean;
-    view?: "blue" | "white" | "orange" | "green";
-    onClick?: () => void;
-    clickable?: boolean;
-    title?: string;
-    children?: ReactNode;
-    className?: string;
-    borderRadius?: number;
-    borderWidth?: number;
-    accentColor?: string;
-    fontSize?: number;
-    doNumberFormat?: boolean;
+    text?: string,
+    crossed?: boolean,
+    crossOnHover?: boolean,
+    shiftOnHover?: boolean,
+    view?: "blue" | "white" | "orange" | "green",
+    onClick?: () => void,
+    clickable?: boolean,
+    title?: string,
+    children?: ReactNode,
+    className?: string,
+    borderRadius?: number,
+    borderWidth?: number,
+    accentColor?: string,
+    fontSize?: number,
+    doNumberFormat?: boolean
 }
 
 export function RoadButton({

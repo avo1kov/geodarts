@@ -7,15 +7,15 @@ import styles from "./Result.module.scss"
 import { GameMode, useGameDispanchContext } from "../GameContext"
 
 interface ResultProps {
-    sumDistanceKm: number;
-    recognizedCities: { name: string }[];
-    hints: string[];
-    showFinal: boolean;
-    dayNumber: number;
-    rank: number;
-    rankWithHints: number;
-    mode: GameMode;
-    setShowFinal: (showFinal: boolean) => void;
+    sumDistanceKm: number,
+    recognizedCities: { name: string }[],
+    hints: string[],
+    showFinal: boolean,
+    dayNumber: number,
+    rank: number,
+    rankWithHints: number,
+    mode: GameMode,
+    setShowFinal: (showFinal: boolean) => void
 }
 
 export const Result: React.FC<ResultProps> = ({
