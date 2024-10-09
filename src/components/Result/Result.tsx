@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 
 import { RoadButton } from "../RoadButton"
 import { isMobile } from "react-device-detect"
