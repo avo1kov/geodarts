@@ -39,7 +39,6 @@ export const Task: React.FC<TaskProps> = ({ hiddenCity }) => {
                                     { hiddenCity?.name.toUpperCase() }
                                 </RoadButton>
                                 and click it!
-                                {/* on the map */}
                             </>
                         : (
                             <div>the city is loading...</div>
