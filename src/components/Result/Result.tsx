@@ -78,12 +78,6 @@ export const Result: React.FC<ResultProps> = ({
                             </div>
                         ) : null
                 }
-                {/* <div className={styles.rank}>
-                    Your place in today's top: <b>{rank}</b>{hints.length > 0 ? ", but you used hints ;)" : ""}
-                </div> */}
-                {/* <div className={styles.dev}>
-                        This is <b>development version</b> of the game. If you want to get the notification after release, please, text me to <a href="mailto: to@agvolkov.ru">to@agvolkov.ru</a>
-                </div> */}
                 <details className={styles.recommendations}>
                     <summary className={styles.summary}>Similar games from other developers</summary>
                     <div className={styles.listOfGames}>
