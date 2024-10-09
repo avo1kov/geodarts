@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import Map, { Layer, NavigationControl, Marker } from "react-map-gl"
 import { LngLat } from "mapbox-gl"
 import maplibregl from "maplibre-gl"
@@ -132,15 +132,7 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCiti
                     "text-halo-color": "hsla(0,0%,100%,0.8)",
                     "text-halo-width": 1.2
                 }}
-                filter={
-                    ["all",
-                        ["all", ["==", "class", "city"]],
-                    // ["any",
-                    //     ["in", "name:ru", hiddenCity.name],
-                    //     ...visibleCities
-                    // ]
-                    ]
-                }
+                filter={["all", ["all", ["==", "class", "city"]]]}
             />
             <Layer
                 id="town"
@@ -174,15 +166,7 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCiti
                     "text-halo-color": "hsla(0,0%,100%,0.8)",
                     "text-halo-width": 1.2
                 }}
-                filter={
-                    ["all",
-                        ["all", ["==", "class", "town"]],
-                    // ["any",
-                    //     ["in", "name:ru", hiddenCity.name],
-                    //     ...visibleCities
-                    // ]
-                    ]
-                }
+                filter={["all", ["all", ["==", "class", "town"]]]}
             />
             <Layer
                 id="place"
@@ -451,9 +435,6 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCiti
                             color="#32ade6"
                             children={(
                                 <div className={styles.marker}>
-                                    {/* <div className={styles.arrow} style={{
-                                    transform: `translateY(-10px) rotate(${attempt.direction + 180}deg) translateY(10px)`
-                                }}> */}
                                     <div className={styles.arrow} style={{
                                         transform: `rotate(${attempt.direction + 180}deg)`
                                     }}>
@@ -463,9 +444,7 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCiti
                                     <div className={styles.text}>
                                         {Math.ceil(attempt.distanceKm)} km
                                     </div>
-                                    {/* <div className={styles.circle}></div> */}
                                 </div>
-                            // </div>
                             )}
                             key={index}
                         />
@@ -485,14 +464,8 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCiti
                                 color="#32ade6"
                                 children={(
                                     <div className={`${styles.marker}`}>
-                                        {/* <div className={styles.arrow} style={{
-                                    transform: `translateY(-10px) rotate(${attempt.direction + 180}deg) translateY(10px)`
-                                }}> */}
                                         <div
                                             className={`${styles.arrow} ${styles.option}`}
-                                            style={{
-                                            // transform: `rotate(${city.direction + 180}deg)`
-                                            }}      
                                             onClick={(e) => {
                                                 onSupposeByMarker(city.id)
                                                 e.stopPropagation()
@@ -500,29 +473,13 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCiti
                                         >
                                         🔘
                                         </div>
-
-                                        {/* <div className={styles.text}>
-                                        {Math.ceil(city.distance)} km
-                                    </div> */}
-                                        {/* <div className={styles.circle}></div> */}
                                     </div>
-                                    // </div>
                                 )}
                                 key={index}
                             />
                     })
                     : null
             }
-            {/* { hiddenCity && 
-                <Marker
-                    latitude={hiddenCity.ll[0]}
-                    longitude={hiddenCity.ll[1]}
-                    children={<div className={`${styles.marker} ${styles.red}`}>
-                        <div className={styles.text}>?</div>
-                        <div className={styles.circle}></div>
-                    </div>}
-                />
-            } */}
         </Map>
     </div>
 }
