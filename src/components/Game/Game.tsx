@@ -180,12 +180,10 @@ export const Game: React.FC = () => {
     )
 }
 
-// Converts from degrees to radians.
 function toRadians(degrees: number) {
     return degrees * Math.PI / 180
 }
    
-// Converts from radians to degrees.
 function toDegrees(radians: number) {
     return radians * 180 / Math.PI
 }
