@@ -52,7 +52,6 @@ export const Result: React.FC<ResultProps> = ({
                         🎉 You've done it! ✅
                         </div>
                     )}
-                    {/* <div>the game #{dayNumber}</div> */}
                 </div>
                 <div className={styles.results}>
                     Accumulated mistakes over
