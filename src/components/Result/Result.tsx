@@ -2,6 +2,7 @@ import React from "react"
 
 import { RoadButton } from "../RoadButton"
 import { isMobile } from "react-device-detect"
+import Confetti from "react-canvas-confetti"
 
 import styles from "./Result.module.scss"
 import { GameMode, useGameDispanchContext } from "../GameContext"
@@ -33,6 +34,7 @@ export const Result: React.FC<ResultProps> = ({
     
     return (
         <div className={styles.finishWrap}>
+            {/* <Confetti /> */}
             <div
                 className={[
                     styles.finish,

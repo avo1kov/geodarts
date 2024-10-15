@@ -23,6 +23,7 @@ export interface GameContextType {
     hints: Round[],
     dayNumber: number,
     mode: GameMode,
+    isGameFinished: boolean,
 }
 
 export enum GameMode {
@@ -105,7 +106,8 @@ const initGameState: GameContextType = FIXED_FINISH
         }], //[citiesData[Math.floor(Math.random() * citiesData.length)]!], // [citiesData[Math.floor(Math.random() * citiesData.length)]!] // [0, 1, 6, 8, 10].map((i) => citiesData[i]!)
         hints: [],
         round: "cities",
-        mode: GameMode.Game
+        mode: GameMode.Game,
+        isGameFinished: false
     }
     : {
         allCities: [],
@@ -117,7 +119,8 @@ const initGameState: GameContextType = FIXED_FINISH
         recognizedCities: [], //[citiesData[Math.floor(Math.random() * citiesData.length)]!], // [citiesData[Math.floor(Math.random() * citiesData.length)]!] // [0, 1, 6, 8, 10].map((i) => citiesData[i]!)
         hints: [],
         round: "cities",
-        mode: GameMode.Game
+        mode: GameMode.Game,
+        isGameFinished: false
     }
 
 export const GameContext = createContext<any>(initGameState)

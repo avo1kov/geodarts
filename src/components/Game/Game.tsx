@@ -22,7 +22,8 @@ export const Game: React.FC = () => {
         recognizedCities,
         hints,
         dayNumber,
-        mode
+        mode,
+        isGameFinished
     } = useGameContext()
 
     const [showFinal, setShowFinal] = useState(true)
@@ -63,11 +64,6 @@ export const Game: React.FC = () => {
         fetchDailyCity()
         fetchAllCities()
     }, [dispatch])
-    
-    const isGameFinished = useMemo(() => {
-        console.log(".", { recognizedCities, hiddenCity })
-        return hiddenCity === undefined
-    }, [hiddenCity, recognizedCities])
 
     useEffect(() => {
         async function getRank() {

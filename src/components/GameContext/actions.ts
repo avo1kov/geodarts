@@ -50,7 +50,8 @@ function finishGame(game: GameContextType): GameContextType {
         recognizedCities: game.hiddenCity
             ? [...game.recognizedCities, game.hiddenCity]
             : game.recognizedCities,
-        hiddenCity: undefined
+        hiddenCity: undefined,
+        isGameFinished: true
     }
 }
 
@@ -65,6 +66,7 @@ export function setTrainingMode(game: GameContextType): GameContextType {
     return {
         ...game,
         mode: GameMode.Training,
-        hiddenCity: game.allCities[Math.floor(Math.random() * game.allCities.length)]
+        hiddenCity: game.allCities[Math.floor(Math.random() * game.allCities.length)],
+        isGameFinished: false
     }
 }
