@@ -1,11 +1,12 @@
-import React from "react"
+import React, { useCallback, useEffect, useRef } from "react"
 
 import { RoadButton } from "../RoadButton"
 import { isMobile } from "react-device-detect"
-import Confetti from "react-canvas-confetti"
+import ReactCanvasConfetti from "react-canvas-confetti"
 
 import styles from "./Result.module.scss"
 import { GameMode, useGameDispanchContext } from "../GameContext"
+import { TCanvasConfettiInstance } from "react-canvas-confetti/dist/types"
 
 interface ResultProps {
     sumDistanceKm: number,
@@ -31,10 +32,48 @@ export const Result: React.FC<ResultProps> = ({
     setShowFinal
 }) => {
     const dispatch = useGameDispanchContext()
+
+    const instance = useRef<TCanvasConfettiInstance>()
+    const instance2 = useRef<TCanvasConfettiInstance>()
+
+    const onInitHandler = ({ confetti }: { confetti: TCanvasConfettiInstance }) =>
+        (instance.current = confetti)
+
+    const onInitHandler2 = ({ confetti }: { confetti: TCanvasConfettiInstance }) =>
+        (instance2.current = confetti)
+
+    const onShootHandler = () => {
+        instance.current?.({
+            angle: 130,
+            spread: 63,
+            particleCount: 700,
+            origin: { x: 1.1, y: 1.1 },
+            gravity: 0.9,
+            decay: 0.9,
+            scalar: 0.95,
+            startVelocity: 90,
+        })
+
+        instance2.current?.({
+            angle: 40,
+            spread: 63,
+            particleCount: 700,
+            origin: { x: -0.1, y: 1.1 },
+            gravity: 0.9,
+            decay: 0.9,
+            scalar: 0.95,
+            startVelocity: 90,
+        })
+    }
+    
+    useEffect(() => {
+        onShootHandler()
+    }, [])
     
     return (
         <div className={styles.finishWrap}>
-            {/* <Confetti /> */}
+            <ReactCanvasConfetti onInit={onInitHandler} />
+            <ReactCanvasConfetti onInit={onInitHandler2} />
             <div
                 className={[
                     styles.finish,
@@ -42,6 +81,7 @@ export const Result: React.FC<ResultProps> = ({
                     recognizedCities[0] === undefined || !showFinal ? styles.hidden : ""
                 ].join(" ")}
             >
+                {/* <button onClick={onShootHandler} className={styles.shootButton}>Shoot!</button> */}
                 <div className={styles.title}>
                     { mode === GameMode.Game ? (
                         <div>

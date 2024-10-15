@@ -67,6 +67,7 @@ export function setTrainingMode(game: GameContextType): GameContextType {
         ...game,
         mode: GameMode.Training,
         hiddenCity: game.allCities[Math.floor(Math.random() * game.allCities.length)],
-        isGameFinished: false
+        isGameFinished: false,
+        attempts: []
     }
 }

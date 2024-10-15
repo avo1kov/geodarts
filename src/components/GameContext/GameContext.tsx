@@ -88,7 +88,7 @@ function gameReducer(game: GameContextType, action: GameDispatchActionType) {
     }
 }
 
-const FIXED_FINISH = false
+const FIXED_FINISH = true
 
 const initGameState: GameContextType = FIXED_FINISH
     ? {
@@ -107,7 +107,7 @@ const initGameState: GameContextType = FIXED_FINISH
         hints: [],
         round: "cities",
         mode: GameMode.Game,
-        isGameFinished: false
+        isGameFinished: true
     }
     : {
         allCities: [],
