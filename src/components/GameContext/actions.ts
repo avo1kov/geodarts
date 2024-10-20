@@ -7,6 +7,7 @@ import {
 } from "./GameContext"
 
 const DEFAULT_RADIUS = 10
+const TODAY = new Date().toISOString().split("T")[0]
 
 export function initGame(game: GameContextType, action: GameDispatchInitGameActionType): GameContextType {
     return {
@@ -45,13 +46,31 @@ export function attempt(game: GameContextType, action: GameDispatchAttemptedActi
 }
 
 function finishGame(game: GameContextType): GameContextType {
+    // todo: is that okay to send it here. Anyway, it's neccessary to wait request
+    if (game.isGameFinished && !game.isStatsSent && game.mode === GameMode.Game) {
+        fetch("https://volkov.media/test/geodarts-server/api/finish_game.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                distanceMistakesKm: game.distanceMistakesKm,
+                attempts: game.attempts.length,
+                hints: game.hints.length,
+                localDate: TODAY,
+                cityId: game.hiddenCity?.id
+            })
+        })
+    }
+
     return {
         ...game,
         recognizedCities: game.hiddenCity
             ? [...game.recognizedCities, game.hiddenCity]
             : game.recognizedCities,
         hiddenCity: undefined,
-        isGameFinished: true
+        isGameFinished: true,
+        isStatsSent: true
     }
 }
 

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { LngLat } from "mapbox-gl"
 
-import { GameMode, useGameContext, useGameDispanchContext } from "../GameContext"
+import { useGameContext, useGameDispanchContext } from "../GameContext"
 import { RegionMap } from "../RegionMap/RegionMap"
 import { Task } from "../Task"
 import { Result } from "../Result"
@@ -23,13 +23,13 @@ export const Game: React.FC = () => {
         hints,
         dayNumber,
         mode,
-        isGameFinished
+        isGameFinished,
+        isStatsSent
     } = useGameContext()
 
     const [showFinal, setShowFinal] = useState(true)
     const [rank, setRank] = useState(0)
     const [rankWithHints, setRankWithHints] = useState(0)
-    const [isStatsSent, setIsStatsSent] = useState(false)
 
     useEffect(() => {
         const fetchAllCities = async () => {
@@ -76,24 +76,6 @@ export const Game: React.FC = () => {
         }
 
         getRank()
-
-        if (isGameFinished && !isStatsSent && mode === GameMode.Game) {
-            fetch("https://volkov.media/test/geodarts-server/api/finish_game.php", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    distanceMistakesKm,
-                    attempts: attempts.length,
-                    hints: hints.length,
-                    localDate: TODAY,
-                    cityId: hiddenCity?.id
-                })
-            })
-
-            setIsStatsSent(true)
-        }
     }, [hints, isGameFinished, isStatsSent, recognizedCities, distanceMistakesKm, attempts.length, hiddenCity?.id, mode])
 
     const onSupposeByMarker = useCallback((cityId: number) => {

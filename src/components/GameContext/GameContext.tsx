@@ -24,6 +24,7 @@ export interface GameContextType {
     dayNumber: number,
     mode: GameMode,
     isGameFinished: boolean,
+    isStatsSent: boolean,
 }
 
 export enum GameMode {
@@ -88,7 +89,7 @@ function gameReducer(game: GameContextType, action: GameDispatchActionType) {
     }
 }
 
-const FIXED_FINISH = true
+const FIXED_FINISH = false
 
 const initGameState: GameContextType = FIXED_FINISH
     ? {
@@ -107,7 +108,8 @@ const initGameState: GameContextType = FIXED_FINISH
         hints: [],
         round: "cities",
         mode: GameMode.Game,
-        isGameFinished: true
+        isGameFinished: true,
+        isStatsSent: false,
     }
     : {
         allCities: [],
@@ -120,7 +122,8 @@ const initGameState: GameContextType = FIXED_FINISH
         hints: [],
         round: "cities",
         mode: GameMode.Game,
-        isGameFinished: false
+        isGameFinished: false,
+        isStatsSent: false
     }
 
 export const GameContext = createContext<any>(initGameState)
