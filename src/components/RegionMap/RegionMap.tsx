@@ -441,7 +441,7 @@ export const RegionMap: React.FC<RegionMapProps> = ({ hiddenCity, recognizedCiti
                                     ⬇️
                                     </div>
 
-                                    <div className={styles.text}>
+                                    <div className={`${styles.text} ${styles.shevron}`}>
                                         {Math.ceil(attempt.distanceKm)} km
                                     </div>
                                 </div>
