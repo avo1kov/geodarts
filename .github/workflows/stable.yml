@@ -33,4 +33,4 @@ jobs:
         remote_folder: /domains/volkov.media/public_html/geodarts/
 
     - name: Link to instance
-      run: echo "http://volkov.media/test/geodarts/"
+      run: echo "http://volkov.media/geodarts/"
