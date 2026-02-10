@@ -45,14 +45,14 @@ jobs:
           }'
 
     - name: Deploy
-      uses: sand4rt/ftp-deployer@v1.8
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
-        sftp: false
-        host: ${{ secrets.FTP_SERVER }}
+        server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local_folder: ./dist/
-        remote_folder: /domains/avo1kov.com/public_html/test/geodarts/
+        local-dir: ./dist/
+        server-dir: /domains/avo1kov.com/public_html/test/geodarts/
+        dangerous-clean-slate: true
 
     - name: Telegram notification
       run: |
