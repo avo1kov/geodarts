@@ -52,7 +52,7 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         local_folder: ./dist/
-        remote_folder: /domains/volkov.media/public_html/test/geodarts/
+        remote_folder: /domains/avo1kov.com/public_html/test/geodarts/
 
     - name: Telegram notification
       run: |
@@ -65,4 +65,4 @@ jobs:
           }'
 
     - name: Link to instance
-      run: echo "http://volkov.media/test/geodarts/"
+      run: echo "http://avo1kov.com/test/geodarts/"

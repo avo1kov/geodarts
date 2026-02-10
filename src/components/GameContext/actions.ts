@@ -48,7 +48,7 @@ export function attempt(game: GameContextType, action: GameDispatchAttemptedActi
 function finishGame(game: GameContextType): GameContextType {
     // todo: is that okay to send it here. Anyway, it's neccessary to wait request
     if (!game.isStatsSent && game.mode === GameMode.Game) {
-        fetch("https://volkov.media/geodarts-server/api/finish_game.php", {
+        fetch("https://avo1kov.com/geodarts-server/api/finish_game.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

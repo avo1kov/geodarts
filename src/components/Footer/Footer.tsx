@@ -9,7 +9,7 @@ export const Footer: React.FC = () => {
     return (
         <div className={[styles.author, isMobile ? styles.mobile : ""].join(" ")}>
             <img src={Logo} className={styles.logo} />
-                by <a href="https://volkov.media" target="_blank">Alexander Volkov</a>
+                by <a href="https://avo1kov.com" target="_blank">Alexander Volkov</a>
         </div>
     )
 }

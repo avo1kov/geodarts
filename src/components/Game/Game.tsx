@@ -33,7 +33,7 @@ export const Game: React.FC = () => {
 
     useEffect(() => {
         const fetchAllCities = async () => {
-            const res = await fetch("https://volkov.media/geodarts-server/api/get_all_cities.php")
+            const res = await fetch("https://avo1kov.com/geodarts-server/api/get_all_cities.php")
             const cities = await res.json()
 
             dispatch({
@@ -48,7 +48,7 @@ export const Game: React.FC = () => {
         }
 
         const fetchDailyCity = async () => {
-            const res = await fetch("https://volkov.media/geodarts-server/api/get_daily_city.php")
+            const res = await fetch("https://avo1kov.com/geodarts-server/api/get_daily_city.php")
             const dailyCity = await res.json()
 
             dispatch({
@@ -67,7 +67,7 @@ export const Game: React.FC = () => {
 
     useEffect(() => {
         async function getRank() {
-            return fetch(`https://volkov.media/geodarts-server/api/get_rank.php?localDate=${TODAY}&distanceMistakesKm=${distanceMistakesKm}`)
+            return fetch(`https://avo1kov.com/geodarts-server/api/get_rank.php?localDate=${TODAY}&distanceMistakesKm=${distanceMistakesKm}`)
                 .then(res => res.json())
                 .then(data => {
                     setRank(data.rankWithNoHints)
